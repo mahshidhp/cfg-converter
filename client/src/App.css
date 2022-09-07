@@ -1,0 +1,115 @@
+* {
+  -webkit-transition: all 0.4s ease;
+}
+
+body {
+  background-image: linear-gradient(90deg, #193e51, #146666, #c3bd2e);
+  min-height: 100%;
+}
+
+html {
+  height: 100%;
+}
+
+.card-shadow {
+  background-color: rgb(0, 0, 0, 0.3);
+  border: 5px solid rgb(195, 189, 46);
+  border-radius: 10px;
+  padding: 40px;
+  margin: 40px;
+  box-shadow: 3px 3px rgba(49, 49, 49, 0.349);
+}
+
+.card-shadow:hover {
+  padding: 60px;
+}
+
+input {
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  border-radius: 6px;
+  height: 35px;
+  padding: 5px;
+}
+
+#selectForm {
+  width: 30%;
+  margin: auto;
+}
+
+.light-text {
+  color: white;
+  margin-bottom: 40px;
+  padding: 0px 30px;
+  font-weight: 300;
+  text-align: left;
+}
+
+.arrow {
+  font-size: 30px;
+  color: #c3bd2e;
+}
+
+.transparent-button {
+  background-color: #146666;
+  border: 2px solid #c3bd2e;
+  color: white;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.transparent-button:hover {
+  background-color: #c3bd2e;
+  color: #193e51;
+  font-size: larger;
+}
+
+.main-button {
+  background-color: #c3bd2e;
+  color: #193e51;
+  border: 2px solid #c3bd2e;
+  font-size: larger;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.add-btn {
+  background-color: #c3bd2e;
+  border: 2px solid #c3bd2e;
+  color: #193e51;
+  font-weight: 600;
+  padding: auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+}
+
+.add-btn:hover {
+  width: 35px;
+  height: 35px;
+}
+
+.main-button:hover {
+  font-size: x-large;
+}
+
+a {
+  color: white !important;
+}
+
+.test-result {
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.test-success {
+  background-color: rgb(40, 167, 69, 0.5);
+}
+
+.test-fail {
+  background-color: rgb(220, 53, 69, 0.5);
+}
+
+svg {
+  margin: 8px;
+}
