@@ -1,4 +1,4 @@
-class Parser:
+class GrammarParser:
     def __init__(self, grammar):
         self.grammar = grammar
 

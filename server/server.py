@@ -2,7 +2,7 @@ from flask import Flask, request
 
 from chomsky import Chomsky
 from greibach import Greibach
-from parser import Parser
+from grammarParser import GrammarParser
 from grammar import Grammar
 
 app = Flask(__name__)
@@ -38,8 +38,8 @@ def test():
     grammar = Grammar(request_data['grammar'])
     result_grammar = Grammar(request_data['resultGrammar'])
 
-    derives_from_original_grammar = Parser(grammar).check_drives_from_grammar(string)
-    derives_from_converted_grammar = Parser(result_grammar).check_drives_from_grammar(string)
+    derives_from_original_grammar = GrammarParser(grammar).check_drives_from_grammar(string)
+    derives_from_converted_grammar = GrammarParser(result_grammar).check_drives_from_grammar(string)
     return {
         "isDerivedFromOriginalGrammar": derives_from_original_grammar,
         "isDerivedFromResultGrammar": derives_from_converted_grammar
