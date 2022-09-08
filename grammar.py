@@ -43,3 +43,17 @@ class Grammar:
             new_symbol = random.choice(string.ascii_uppercase)
         self.non_terminals.add(new_symbol)
         return new_symbol
+
+    def find_rules_by_lhs(self, lhs):
+        for i in range(len(self.rules)):
+            rule = self.rules[i]
+            if rule["lhs"] == lhs:
+                return i
+        return None
+
+    def find_rules_by_rhs(self, rhs):
+        for i in range(len(self.rules)):
+            rule = self.rules[i]
+            if rule["rhs"] == rhs:
+                return i
+        return None

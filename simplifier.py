@@ -43,8 +43,8 @@ class Simplifier:
         unit_productions = []
         while True:
             for rule in self.grammar.rules:
-                if self.check_is_unit_production(rule) and self.find_rules_by_lhs(rule["rhs"]):
-                    next_rule_index = self.find_rules_by_lhs(rule["rhs"])
+                if self.check_is_unit_production(rule) and self.grammar.find_rules_by_lhs(rule["rhs"]):
+                    next_rule_index = self.grammar.find_rules_by_lhs(rule["rhs"])
                     if next_rule_index:
                         unit_productions.append(rule["lhs"]+"  →  "+rule["rhs"])
                         rule["rhs"] = self.grammar.rules[next_rule_index]["rhs"]
@@ -82,7 +82,7 @@ class Simplifier:
                 if rule["rhs"] == EPSILON:
                     prev_element = rule["lhs"]
                     while len(prev_element) != 1:
-                        next_null_rule = self.find_rules_by_rhs(prev_element)
+                        next_null_rule = self.grammar.find_rules_by_rhs(prev_element)
             else:
                 break
         self.generate_null_production_message(null_productions)
@@ -96,16 +96,3 @@ class Simplifier:
             null_productions_str = ",".join(null_productions)
             self.messages.append(null_productions_str + " were null productions")
 
-    def find_rules_by_lhs(self, lhs):
-        for i in range(len(self.grammar.rules)):
-            rule = self.grammar.rules[i]
-            if rule["lhs"] == lhs:
-                return i
-        return None
-
-    def find_rules_by_rhs(self, rhs):
-        for i in range(len(self.grammar.rules)):
-            rule = self.grammar.rules[i]
-            if rule["rhs"] == rhs:
-                return i
-        return None
