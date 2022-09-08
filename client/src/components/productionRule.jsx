@@ -20,7 +20,6 @@ class ProductionRule extends Component {
         <input
           value={r}
           key={rhsIndex}
-          rhsIndex={rhsIndex}
           onKeyDown={(event) =>
             this.props.handleKeyDown(event, this.props.ruleIndex, rhsIndex)
           }

@@ -13,8 +13,8 @@ class Result extends Component {
             <h1>Result</h1>
             <hr />
             <ul>
-              {this.props.conversionMessages.map((msg) => (
-                <li>{msg}</li>
+              {this.props.conversionMessages.map((msg, id) => (
+                <li key={id}>{msg}</li>
               ))}
             </ul>
           </div>
