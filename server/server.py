@@ -1,17 +1,20 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
+from flask_cors import CORS, cross_origin
 
 from chomsky import Chomsky
 from greibach import Greibach
 from grammarParser import GrammarParser
 from grammar import Grammar
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../client/build", static_url_path="")
+CORS(app)
 
 CHOMSKY = 1
 GREIBACH = 2
 
 
 @app.route("/convert", methods=["POST"])
+@cross_origin()
 def convert():
     request_data = request.get_json()
     grammar = Grammar(request_data['grammar'])
@@ -32,6 +35,7 @@ def convert():
 
 
 @app.route("/test", methods=["POST"])
+@cross_origin()
 def test():
     request_data = request.get_json()
     string = request_data['string']
@@ -46,5 +50,11 @@ def test():
     }
 
 
+@app.route("/")
+@cross_origin()
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=4999)
+    app.run(debug=False, port=4999)
