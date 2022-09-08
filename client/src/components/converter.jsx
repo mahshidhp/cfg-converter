@@ -59,7 +59,13 @@ class Converter extends Component {
   }
 
   reset() {
-    this.setState({ productionRules: [], resultProductionRules: [] });
+    this.setState({
+      productionRules: [],
+      resultProductionRules: [],
+      conversionMessages: [],
+      isDerivedFromOriginalGrammar: null,
+      isDerivedFromResultGrammar: null,
+    });
   }
 
   addRHS(ruleId) {
