@@ -113,3 +113,9 @@ a {
 svg {
   margin: 8px;
 }
+
+.resource {
+  text-decoration: none;
+  color: #c3bd2e !important;
+  font-weight: 400;
+}
