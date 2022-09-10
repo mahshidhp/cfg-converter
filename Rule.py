@@ -3,11 +3,15 @@ from util import *
 
 class Rule:
     def __init__(self, lhs, rhs):
+        """
+        RHS = right-hand side
+        LHS = left-hand side
+        """
         self.lhs = lhs
         self.rhs = rhs
 
     def get_all_rule_symbols(self):
-        return list(self.rhs + self.lhs)
+        return list(self.lhs + self.rhs)
 
     def get_rhs_symbols(self):
         return list(self.rhs)

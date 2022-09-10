@@ -3,4 +3,4 @@ def is_terminal(char):
 
 
 def is_non_terminal(char):
-    return char.isupper()
+    return char.isupper() or char == '$'

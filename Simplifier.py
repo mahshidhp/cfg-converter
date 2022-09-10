@@ -44,7 +44,8 @@ class Simplifier:
             prev_set = current_set.copy()
             for rule in self.grammar.rules:
                 if rule.lhs in current_set:
-                    current_set.update(rule.get_rhs_non_terminals())
+                    new_visited_non_terminals = rule.get_rhs_non_terminals()
+                    current_set.update(new_visited_non_terminals)
 
         redundant_non_terminals.update(self.grammar.non_terminals.difference(current_set))
         self.remove_rules_with_redundant_symbols(redundant_non_terminals)

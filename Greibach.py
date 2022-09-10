@@ -1,5 +1,6 @@
 from Chomsky import Chomsky
 from Converter import Converter
+from Rule import Rule
 from util import *
 
 """
@@ -25,12 +26,16 @@ class Greibach(Converter):
         self.map_non_terminal_to_ordered_symbols()
         self.sort_rules()
         self.remove_left_recursion()
+        self.make_rhs_first_symbol_terminal()
         return self.grammar
 
     def map_non_terminal_to_ordered_symbols(self):
+        """
+        Assign a value "i" for non-terminals with ascending order
+        """
         current_number = 0
         for rule in self.grammar.rules:
-            rule_symbols = rule["lhs"] + rule["rhs"]
+            rule_symbols = rule.get_all_rule_symbols()
             for symbol in rule_symbols:
                 if is_non_terminal(symbol) and symbol not in self.mapping:
                     self.mapping[symbol] = current_number
@@ -38,15 +43,49 @@ class Greibach(Converter):
                     current_number += 1
 
     def sort_rules(self):
+        """
+        Alter the rules so that the non-terminals are in ascending order, such that if a production s of form
+        Ai -> Aj x, then i < j
+        """
         while True:
-            for i in range(len(self.grammar.rules)):
-                rule = self.grammar.rules[i]
-                if is_non_terminal(rule["rhs"][0]) and self.mapping[rule["lhs"]] >= self.mapping[rule["rhs"][0]]:
-                    indices = self.grammar.find_rules_by_lhs(rule["rhs"][0])
-                    for index in indices:
-                        pass
+            for index, rule in enumerate(self.grammar.rules):
+                # Check if i > j
+                if is_non_terminal(rule.rhs[0]) and self.mapping[rule.lhs] > self.mapping[rule.rhs[0]]:
+                    indices = self.grammar.find_rules_by_lhs(rule.rhs[0])
+                    for idx in indices:
+                        # substitute Aj using production rules
+                        new_rule_rhs = self.grammar.rules[idx].rhs + rule.rhs[1:]
+                        self.grammar.rules.append(Rule(rule.lhs, new_rule_rhs))
+                    self.grammar.rules.remove(rule)
+                    break
             else:
                 break
 
     def remove_left_recursion(self):
-        pass
+        while True:
+            for index, rule in enumerate(self.grammar.rules):
+                if is_non_terminal(rule.rhs[0]) and rule.lhs == rule.rhs[0]:
+                    new_non_terminal = self.grammar.get_unused_non_terminal()
+                    self.grammar.rules.append(Rule(new_non_terminal, rule.rhs[1:]))
+                    self.grammar.rules.append(Rule(new_non_terminal, rule.rhs[1:]+new_non_terminal))
+
+                    indices = self.grammar.find_rules_by_lhs(rule.lhs)
+                    for idx in indices:
+                        if idx != index:
+                            self.grammar.rules.append(Rule(rule.lhs, self.grammar.rules[idx].rhs + new_non_terminal))
+                    self.grammar.rules.remove(rule)
+                    break
+            else:
+                break
+
+    def make_rhs_first_symbol_terminal(self):
+        while True:
+            for index, rule in enumerate(self.grammar.rules):
+                if is_non_terminal(rule.rhs[0]):
+                    indices = self.grammar.find_rules_by_lhs(rule.rhs[0])
+                    for idx in indices:
+                        self.grammar.rules.append(Rule(rule.lhs, self.grammar.rules[idx].rhs + rule.rhs[1:]))
+                    self.grammar.rules.remove(rule)
+                    break
+            else:
+                break
