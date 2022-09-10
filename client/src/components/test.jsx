@@ -47,11 +47,13 @@ class Test extends Component {
 
     return (
       <div className="row">
-        <div className="col-md-6 card-shadow">
+        <dev className="col-md-2"></dev>
+        <div className="col-md-8 card-shadow">
           {description}
           {input}
           {result}
         </div>
+        <dev className="col-md-2"></dev>
       </div>
     );
   }
