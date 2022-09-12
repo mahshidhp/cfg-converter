@@ -14,6 +14,9 @@ class Grammar:
         self.build_rules(rules)
         self.detect_symbols()
 
+    def __getitem__(self, lhs):
+        return [self.rules[i] for i in self.find_rules_by_lhs(lhs)]
+
     def detect_symbols(self):
         for rule in self.rules:
             for symbol in rule.get_all_rule_symbols():
@@ -67,3 +70,14 @@ class Grammar:
 
     def get_json_rules(self):
         return [{"rhs": rule.rhs, "lhs": rule.lhs} for rule in self.rules]
+
+    def is_tag(self, sym):
+        """
+        Checks whether the given symbol is a tag, i.e. a non-terminal with rules
+        to solely terminals.
+        """
+
+        if is_non_terminal(sym):
+            rules = [self.rules[i] for i in self.find_rules_by_lhs(sym)]
+            return all(is_terminal(s) for r in rules for s in r.rhs)
+        return False

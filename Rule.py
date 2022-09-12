@@ -24,3 +24,17 @@ class Rule:
 
     def __str__(self):
         return self.lhs + "  ->  " + self.rhs
+
+    def __len__(self):
+        return len(self.rhs)
+
+    def __contains__(self, sym):
+        return sym in self.rhs
+
+    def __getitem__(self, i):
+        return self.rhs[i]
+
+    def __eq__(self, other):
+        if type(other) is Rule:
+            return self.lhs == other.lhs and self.rhs == other.rhs
+        return False
