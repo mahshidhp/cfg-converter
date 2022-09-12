@@ -9,10 +9,13 @@ class Grammar:
         self.rules = []
         self.terminals = set()
         self.non_terminals = set()
-        self.start_symbol = 'S'
 
         self.build_rules(rules)
         self.detect_symbols()
+        self.start_symbol = self.detect_start_symbol()
+
+    def detect_start_symbol(self):
+        return '$' if '$' in self.non_terminals else 'S'
 
     def __getitem__(self, lhs):
         return [self.rules[i] for i in self.find_rules_by_lhs(lhs)]

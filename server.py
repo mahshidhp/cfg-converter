@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 
 from Chomsky import Chomsky
 from Greibach import Greibach
-from GrammarParser import GrammarParser
+from GrammarParser import EarleyParser
 from Grammar import Grammar
 
 app = Flask(__name__, static_folder="client/build", static_url_path="")
@@ -42,8 +42,8 @@ def test():
     grammar = Grammar(request_body['grammar'])
     result_grammar = Grammar(request_body['resultGrammar'])
 
-    derives_from_original_grammar = GrammarParser(grammar).check_drives_from_grammar(string)
-    derives_from_converted_grammar = GrammarParser(result_grammar).check_drives_from_grammar(string)
+    derives_from_original_grammar = EarleyParser(string, grammar).run()
+    derives_from_converted_grammar = EarleyParser(string, result_grammar).run()
     return {
         "isDerivedFromOriginalGrammar": derives_from_original_grammar,
         "isDerivedFromResultGrammar": derives_from_converted_grammar
