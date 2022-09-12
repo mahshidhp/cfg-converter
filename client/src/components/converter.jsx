@@ -17,6 +17,7 @@ class Converter extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.convert = this.convert.bind(this);
     this.test = this.test.bind(this);
+    this.handleTestStringChange = this.handleTestStringChange.bind(this);
     this.postData = this.postData.bind(this);
 
     this.state = {
@@ -26,6 +27,7 @@ class Converter extends Component {
       conversionMessages: [],
 
       //test-component
+      testString: "",
       isDerivedFromOriginalGrammar: null,
       isDerivedFromResultGrammar: null,
     };
@@ -51,6 +53,7 @@ class Converter extends Component {
         />
         <Test
           test={this.test}
+          handleTestStringChange={this.handleTestStringChange}
           isDerivedFromOriginalGrammar={this.state.isDerivedFromOriginalGrammar}
           isDerivedFromResultGrammar={this.state.isDerivedFromResultGrammar}
         />
@@ -63,6 +66,7 @@ class Converter extends Component {
       productionRules: [],
       resultProductionRules: [],
       conversionMessages: [],
+      testString: "",
       isDerivedFromOriginalGrammar: null,
       isDerivedFromResultGrammar: null,
     });
@@ -110,6 +114,10 @@ class Converter extends Component {
     }
   }
 
+  handleTestStringChange(event) {
+    this.setState({ testString: event.target.value });
+  }
+
   convert() {
     const requestData = {
       grammar: this.state.productionRules,
@@ -124,11 +132,11 @@ class Converter extends Component {
     });
   }
 
-  test(string) {
+  test() {
     const requestData = {
       grammar: this.state.productionRules,
       resultGrammar: this.state.resultProductionRules,
-      string: string,
+      string: this.state.testString,
     };
 
     this.postData("/test", requestData).then((data) => {

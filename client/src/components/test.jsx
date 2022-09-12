@@ -14,7 +14,7 @@ class Test extends Component {
     );
     const input = (
       <div>
-        <input type="text" />
+        <input type="text" onChange={this.props.handleTestStringChange} />
         <button
           type="submit"
           className="main-button m-2"
@@ -47,13 +47,13 @@ class Test extends Component {
 
     return (
       <div className="row">
-        <dev className="col-md-2"></dev>
+        <div className="col-md-2"></div>
         <div className="col-md-8 card-shadow">
           {description}
           {input}
           {result}
         </div>
-        <dev className="col-md-2"></dev>
+        <div className="col-md-2"></div>
       </div>
     );
   }
