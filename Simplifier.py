@@ -1,4 +1,6 @@
 from util import *
+from Rule import Rule
+import copy
 
 EPSILON = "ε"
 
@@ -6,24 +8,19 @@ EPSILON = "ε"
 class Simplifier:
     def __init__(self, grammar):
         self.grammar = grammar
+        self.grammar_timeline = []  # report of simplifications on grammar
         self.messages = []
 
     def simplify(self):
-        self.remove_redundant_rules()
-        self.remove_unit_production()
-        # self.remove_null_production()
-        return self.grammar
+        self.remove_redundant_non_terminals()
+        self.remove_unreachable_symbols()
+        self.remove_unit_productions()
+        self.remove_null_productions()
 
     """
-    Removing redundant symbols:
-    
-    phase 1:
     find non-terminals that don't generate a terminal and remove rules containing them
-    phase 2:
-    find non-terminal tha are unreachable from starting symbol
     """
-    def remove_redundant_rules(self):
-        # Phase 1
+    def remove_redundant_non_terminals(self):
         prev_set = set()
         current_set = self.grammar.terminals.copy()
         while prev_set != current_set:
@@ -34,41 +31,55 @@ class Simplifier:
                 if len(rhs_current_set_intersection) > 0:
                     current_set.add(rule.lhs)
 
-        redundant_non_terminals = self.grammar.non_terminals.difference(current_set)
-        self.remove_rules_with_redundant_symbols(redundant_non_terminals)
+        redundant_symbols = self.grammar.non_terminals.difference(current_set)
+        self.remove_rules_with_redundant_symbols(redundant_symbols)
+        self.generate_redundant_non_terminals_message(list(redundant_symbols))
+        self.grammar_timeline.append(copy.deepcopy(self.grammar))
 
-        # Phase 2
+    def generate_redundant_non_terminals_message(self, redundant_symbols):
+        if len(redundant_symbols) == 0:
+            self.messages.append("All non-terminal symbols derive a terminal symbol.")
+        elif len(redundant_symbols) == 1:
+            self.messages.append(redundant_symbols[0] + " does not derive a terminal symbol.")
+        else:
+            redundant_rules_str = ", ".join(redundant_symbols)
+            self.messages.append(redundant_rules_str + " do not derive a terminal symbol.")
+
+    """
+    find symbols that are unreachable from starting symbol and remove rules containing them
+    """
+    def remove_unreachable_symbols(self):
         prev_set = set()
         current_set = {self.grammar.start_symbol}
         while prev_set != current_set:
             prev_set = current_set.copy()
             for rule in self.grammar.rules:
                 if rule.lhs in current_set:
-                    new_visited_non_terminals = rule.get_rhs_non_terminals()
-                    current_set.update(new_visited_non_terminals)
+                    current_set.update(rule.get_all_symbols())
 
-        redundant_non_terminals.update(self.grammar.non_terminals.difference(current_set))
-        self.remove_rules_with_redundant_symbols(redundant_non_terminals)
+        all_symbols = self.grammar.non_terminals.union(self.grammar.terminals)
+        unreachable_symbols = all_symbols.difference(current_set)
+        self.remove_rules_with_redundant_symbols(unreachable_symbols)
+        self.generate_unreachable_symbols_message(list(unreachable_symbols))
+        self.grammar_timeline.append(copy.deepcopy(self.grammar))
 
-        self.generate_redundant_rules_message(list(redundant_non_terminals))
+    def generate_unreachable_symbols_message(self, redundant_symbols):
+        if len(redundant_symbols) == 0:
+            self.messages.append("There were no unreachable symbols.")
+        elif len(redundant_symbols) == 1:
+            self.messages.append(redundant_symbols[0] + " is unreachable from starting symbol.")
+        else:
+            redundant_rules_str = ", ".join(redundant_symbols)
+            self.messages.append(redundant_rules_str + " are unreachable from starting symbol.")
 
-    def remove_rules_with_redundant_symbols(self, redundant_non_terminals):
+    def remove_rules_with_redundant_symbols(self, redundant_symbols):
         redundant_rules_indices = []
         for index, rule in enumerate(self.grammar.rules):
-            rule_symbols = set(rule.get_all_rule_symbols())
-            if rule_symbols.intersection(redundant_non_terminals):
+            rule_symbols = set(rule.get_all_symbols())
+            if rule_symbols.intersection(redundant_symbols):
                 redundant_rules_indices.append(index)
         self.grammar.rules = [rule for index, rule in enumerate(self.grammar.rules)
                               if index not in redundant_rules_indices]
-
-    def generate_redundant_rules_message(self, redundant_non_terminals):
-        if len(redundant_non_terminals) == 0:
-            self.messages.append("There were no redundant non-terminals.")
-        elif len(redundant_non_terminals) == 1:
-            self.messages.append(redundant_non_terminals[0] + " was redundant.")
-        else:
-            redundant_rules_str = ", ".join(redundant_non_terminals)
-            self.messages.append(redundant_rules_str + " were redundant.")
 
     """
     Unit production:
@@ -77,23 +88,22 @@ class Simplifier:
     1- Add A -> x to grammar whenever B -> x occurs
     2- Delete A -> B from grammar
     """
-    def remove_unit_production(self):
+    def remove_unit_productions(self):
         unit_productions = []
         while True:
             for rule in self.grammar.rules:
-                if self.check_is_unit_production(rule) and \
-                        len((next_indices := self.grammar.find_rules_by_lhs(rule.rhs))):
+                if rule.is_unit_production():
                     unit_productions.append(str(rule))
-                    for index in next_indices:
+                    # if rule.rhs == self.grammar.start_symbol:
+                    #     self.grammar.start_symbol = rule.lhs
+                    for index in self.grammar.find_rules_by_lhs(rule.rhs):
                         self.grammar.rules[index].lhs = rule.lhs
                     self.grammar.rules.remove(rule)
                     break
             else:
                 break
         self.generate_unit_production_message(unit_productions)
-
-    def check_is_unit_production(self, rule):
-        return len(rule.rhs) == 1 and len(rule.lhs) == 1 and is_non_terminal(rule.rhs) and is_non_terminal(rule.lhs)
+        self.grammar_timeline.append(copy.deepcopy(self.grammar))
 
     def generate_unit_production_message(self, unit_productions):
         unit_productions_str = ", ".join(unit_productions)
@@ -112,24 +122,47 @@ class Simplifier:
     2- Replace each occurrences of A in these productions with ε
     3- Add the result productions to the grammar
     """
-    def remove_null_production(self):
-        null_productions = []
+    def remove_null_productions(self):
+        nullable_non_terminals = []
         while True:
             for rule in self.grammar.rules:
-                if rule["rhs"] == EPSILON:
-                    prev_element = rule["lhs"]
-                    while len(prev_element) != 1:
-                        next_null_rules = self.grammar.find_rules_by_rhs(prev_element)
+                if rule.rhs == EPSILON:
+                    nullable_non_terminals.append(rule.lhs)
+                    if rule.lhs != self.grammar.start_symbol:
+                        self.grammar.rules.remove(rule)
+                    break
+                # check if rhs is all non-terminals and all of them are nullable
+                elif len(rule.get_rhs_symbols()) == len(rule.get_rhs_non_terminals()) and \
+                        all(t in nullable_non_terminals for t in rule.get_rhs_non_terminals()):
+                    nullable_non_terminals.append(rule.lhs)
+                    break
             else:
                 break
-        self.generate_null_production_message(null_productions)
 
-    def generate_null_production_message(self, null_productions):
-        if len(null_productions) == 0:
-            self.messages.append("There were no null productions.")
-        elif len(null_productions) == 1:
-            self.messages.append(null_productions[0] + " was null production.")
+        for nullable_non_t in nullable_non_terminals:
+            if nullable_non_t != self.grammar.start_symbol:
+                self.add_new_rules_by_replacing_nullable_symbol(nullable_non_t)
+
+        self.generate_null_production_message(nullable_non_terminals)
+        self.grammar_timeline.append(copy.deepcopy(self.grammar))
+
+    def add_new_rules_by_replacing_nullable_symbol(self, nullable_symbol):
+        new_rules = []
+        for rule in self.grammar.rules:
+            occ_indices = [index for index, sym in enumerate(rule.get_rhs_symbols()) if sym == nullable_symbol]
+            # for all combinations of occurrence indices add a new rule
+            combinations = find_all_combinations_of_arr(occ_indices)
+            for comb in combinations:
+                new_rhs = "".join([char for ind, char in enumerate(rule.rhs) if ind not in comb])
+                new_rules.append(Rule(rule.lhs, new_rhs))
+        self.grammar.rules += new_rules
+
+    def generate_null_production_message(self, nullable_non_terminals):
+        if len(nullable_non_terminals) == 0:
+            self.messages.append("There were no nullable non-terminals.")
+        elif len(nullable_non_terminals) == 1:
+            self.messages.append(nullable_non_terminals[0] + " was nullable.")
         else:
-            null_productions_str = ", ".join(null_productions)
-            self.messages.append(null_productions_str + " were null productions.")
+            null_productions_str = ", ".join(nullable_non_terminals)
+            self.messages.append(null_productions_str + " were nullable.")
 

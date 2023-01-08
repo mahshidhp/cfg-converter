@@ -19,7 +19,7 @@ class Greibach(Converter):
         self.reverse_mapping = dict()
 
     def convert(self):
-        chomsky_converter = Chomsky(self.grammar)
+        chomsky_converter = Chomsky(self.grammar, should_simplify=False)
         self.grammar = chomsky_converter.convert()
         self.messages = chomsky_converter.messages
 
@@ -35,7 +35,7 @@ class Greibach(Converter):
         """
         current_number = 0
         for rule in self.grammar.rules:
-            rule_symbols = rule.get_all_rule_symbols()
+            rule_symbols = rule.get_all_symbols()
             for symbol in rule_symbols:
                 if is_non_terminal(symbol) and symbol not in self.mapping:
                     self.mapping[symbol] = current_number

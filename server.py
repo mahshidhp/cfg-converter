@@ -16,22 +16,39 @@ GREIBACH = 2
 @app.route("/convert", methods=["POST"])
 @cross_origin()
 def convert():
-    request_body = request.get_json()
-    grammar = Grammar(request_body['grammar'])
-    conversion_form = int(request_body['conversionForm'])
+    try:
+        request_body = request.get_json()
+        grammar = Grammar(request_body['grammar'])
 
-    converter = None
-    if conversion_form == CHOMSKY:
-        converter = Chomsky(grammar)
-    elif conversion_form == GREIBACH:
-        converter = Greibach(grammar)
+        if request_body['conversionForm']:
+            conversion_form = int(request_body['conversionForm'])
+        else:
+            raise Exception("No conversion form is selected.")
 
-    converted_grammar = converter.convert()
+        converter = None
+        if conversion_form == CHOMSKY:
+            converter = Chomsky(grammar)
+        elif conversion_form == GREIBACH:
+            converter = Greibach(grammar)
 
-    return {
-        "convertedGrammar": converted_grammar.get_json_rules(),
-        "conversionMessages": converter.messages
-    }
+        converter.convert()
+
+        return {
+            "simplificationTimeline": [grammar.get_json_compact_rules() for grammar in converter.simplifier.grammar_timeline],
+            "simplificationMessages": converter.simplifier.messages,
+            "convertedGrammar": converter.grammar.get_json_compact_rules(),
+            "conversionMessages": converter.messages,
+            "errorMessage": "",
+        }
+
+    except Exception as e:
+        return {
+            "errorMessage": str(e),
+            "simplificationTimeline": [],
+            "simplificationMessages": [],
+            "convertedGrammar": [],
+            "conversionMessages": []
+        }
 
 
 @app.route("/test", methods=["POST"])

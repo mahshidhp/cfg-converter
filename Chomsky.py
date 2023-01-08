@@ -1,15 +1,10 @@
 from Converter import Converter
-from Simplifier import Simplifier
 from Rule import Rule
 from util import *
 
 
 class Chomsky(Converter):
     def convert(self):
-        simplifier = Simplifier(self.grammar)
-        self.grammar = simplifier.simplify()
-        self.messages = simplifier.messages
-
         if self.check_start_symbol_is_used():
             self.messages.append("'$' is now the start symbol.")
             self.grammar.rules.insert(0, Rule("$", self.grammar.start_symbol))
@@ -39,7 +34,7 @@ class Chomsky(Converter):
 
                 elif len(rule.rhs) > 2:
                     """
-                    A -> BCDE..L
+                    A -> BCDE...L
                     converts to:
                     A -> BZ, Z -> CDE...L
                     and then:

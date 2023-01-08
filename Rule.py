@@ -1,16 +1,18 @@
 from util import *
 
+"""
+shows a grammar rule in the form: LHS -> RHS
+RHS = right-hand side
+LHS = left-hand side
+"""
+
 
 class Rule:
     def __init__(self, lhs, rhs):
-        """
-        RHS = right-hand side
-        LHS = left-hand side
-        """
         self.lhs = lhs
         self.rhs = rhs
 
-    def get_all_rule_symbols(self):
+    def get_all_symbols(self):
         return list(self.lhs + self.rhs)
 
     def get_rhs_symbols(self):
@@ -22,17 +24,11 @@ class Rule:
     def get_lhs_symbols(self):
         return list(self.lhs)
 
+    def is_unit_production(self):
+        return len(self.rhs) == 1 and is_non_terminal(self.rhs)
+
     def __str__(self):
         return self.lhs + "  ->  " + self.rhs
-
-    def __len__(self):
-        return len(self.rhs)
-
-    def __contains__(self, sym):
-        return sym in self.rhs
-
-    def __getitem__(self, i):
-        return self.rhs[i]
 
     def __eq__(self, other):
         if type(other) is Rule:
