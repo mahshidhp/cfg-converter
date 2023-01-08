@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import InputGrammar from "./inputGrammar";
 import Test from "./test";
 import Result from "./result";
+import exampleGrammars from "./exampleGrammars";
 
 const EPSILON = String.fromCharCode(949);
 
@@ -33,9 +34,11 @@ class Converter extends Component {
             reset={this.reset}
             addProductionRule={this.addProductionRule}
             addRHS={this.addRHS}
+            handleRuleDeletion={this.handleRuleDeletion}
             handleKeyDown={this.handleKeyDown}
             handleSelectForm={this.handleSelectForm}
             handleInputChange={this.handleInputChange}
+            handleExampleInputLoad={this.handleExampleInputLoad}
             convert={this.convert}
             errorMessage={this.state.errorMessage}
           />
@@ -91,12 +94,23 @@ class Converter extends Component {
     currentRHS.focus();
   };
 
+  deleteRHS = (ruleId, rhsId) => {
+    const { productionRules } = this.state;
+    const newRHS = [...productionRules[ruleId].rhs];
+    newRHS.splice(rhsId, 1);
+    const newRule = { lhs: productionRules[ruleId].lhs, rhs: newRHS };
+    const newRules = productionRules.map((rule, id) =>
+      id === ruleId ? newRule : rule
+    );
+    this.setState({ productionRules: newRules });
+  };
+
   addProductionRule = () => {
     let productionRules = this.state.productionRules;
     const newRule =
       productionRules.length === 0
         ? { lhs: "S", rhs: [EPSILON] }
-        : { lhs: null, rhs: [EPSILON] };
+        : { lhs: "", rhs: [EPSILON] };
     productionRules = productionRules.concat(newRule);
     this.setState({ productionRules }, () => this.changeFocusToLastLHS());
   };
@@ -105,6 +119,14 @@ class Converter extends Component {
     const lhsInputElements = document.getElementsByClassName("lhs-input");
     const lastLhs = lhsInputElements[lhsInputElements.length - 1];
     lastLhs.focus();
+  };
+
+  handleRuleDeletion = (ruleId) => {
+    const { productionRules } = this.state;
+    const newRules = productionRules
+      .slice(0, ruleId)
+      .concat(productionRules.slice(ruleId + 1));
+    this.setState({ productionRules: newRules });
   };
 
   handleSelectForm = (e) => {
@@ -132,7 +154,21 @@ class Converter extends Component {
     } else if (e.key === "Enter") {
       e.preventDefault();
       this.addProductionRule();
+    } else if (e.key === "Backspace") {
+      if (
+        rhsId !== null &&
+        this.state.productionRules[ruleId].rhs[rhsId] === ""
+      ) {
+        e.preventDefault();
+        this.deleteRHS(ruleId, rhsId);
+      }
     }
+  };
+
+  handleExampleInputLoad = (exampleId) => {
+    const exampleRules = JSON.parse(JSON.stringify(exampleGrammars[exampleId])); //deep copy
+    this.reset();
+    this.setState({ productionRules: exampleRules });
   };
 
   handleTestStringChange = (event) => {

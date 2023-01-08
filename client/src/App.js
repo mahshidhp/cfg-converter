@@ -28,7 +28,7 @@ class App extends Component {
     this.setState({ nightMode: checked });
     const root = document.querySelector(":root");
     if (checked) {
-      root.style.setProperty("--bg-color", "#42474a");
+      root.style.setProperty("--bg-color", "#545a5f");
       root.style.setProperty("--border-color", "#37aa9c");
       root.style.setProperty("--accent-color", "#1a1a1b");
       root.style.setProperty("--text-color", "white");

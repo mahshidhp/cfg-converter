@@ -5,7 +5,7 @@ import SelectCFG from "./selectCFG";
 class InputGrammar extends Component {
   render() {
     return (
-      <div className="col-lg card-shadow text-center">
+      <div className="col-lg card-shadow">
         {this.renderDescription()}
         <SelectCFG handleSelectForm={this.props.handleSelectForm} />
         {this.renderProductionRules()}
@@ -36,6 +36,7 @@ class InputGrammar extends Component {
           rhs={productionRule.rhs}
           handleKeyDown={this.props.handleKeyDown}
           handleInputChange={this.props.handleInputChange}
+          handleRuleDeletion={this.props.handleRuleDeletion}
           addRHS={this.props.addRHS}
           ruleIndex={ruleIndex}
           key={ruleIndex}
@@ -55,14 +56,41 @@ class InputGrammar extends Component {
           <br />
           Use "S" as start symbol.
         </p>
+        <p>You can use example grammars:</p>
+        {this.renderExampleGrammarButtons()}
         <hr className="highlighted" />
       </div>
     );
   }
 
-  renderButtons() {
+  renderExampleGrammarButtons() {
     return (
       <Fragment>
+        <button
+          className="btn-sm example-btn"
+          onClick={() => this.props.handleExampleInputLoad(0)}
+        >
+          Example 1
+        </button>
+        <button
+          className="btn-sm example-btn"
+          onClick={() => this.props.handleExampleInputLoad(1)}
+        >
+          Example 2
+        </button>
+        <button
+          className="btn-sm example-btn"
+          onClick={() => this.props.handleExampleInputLoad(2)}
+        >
+          Example 3
+        </button>
+      </Fragment>
+    );
+  }
+
+  renderButtons() {
+    return (
+      <div className="text-center">
         <br />
         <button
           className="m-2 transparent-button"
@@ -77,7 +105,7 @@ class InputGrammar extends Component {
         <button className="btn-lg m-2 main-button" onClick={this.props.convert}>
           Convert
         </button>
-      </Fragment>
+      </div>
     );
   }
 }

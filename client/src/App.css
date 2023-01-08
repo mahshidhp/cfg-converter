@@ -1,9 +1,12 @@
 :root {
-  --bg-color: #42474a;
+  --bg-color: #545a5f;
   --border-color: #37aa9c;
   --accent-color: #1a1a1b;
   --text-color: white;
   --highlight-color: #94f3e4;
+  --fail: rgb(220, 53, 69, 0.5);
+  --fail-fill: rgb(220, 53, 69);
+  --success: rgb(40, 167, 69, 0.5);
 }
 
 /* :root {
@@ -54,6 +57,7 @@ html {
 
 .card-shadow:hover {
   padding: 60px 50px;
+  box-shadow: 10px 10px rgba(49, 49, 49, 0.349);
 }
 
 /* ----------------------------inputs---------------------------- */
@@ -94,7 +98,7 @@ input {
 
 .main-button {
   background-color: var(--border-color);
-  color: var(--bg-color);
+  color: var(--text-color);
   border: 2px solid var(--border-color);
   font-size: larger;
   padding: 8px;
@@ -117,8 +121,29 @@ input {
 }
 
 .add-btn:hover {
-  width: 35px;
-  height: 35px;
+  filter: brightness(120%);
+}
+
+.example-btn {
+  background-color: var(--border-color);
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  margin: 5px 0px;
+  margin-right: 10px;
+}
+
+.example-btn:hover {
+  filter: brightness(120%);
+}
+
+.delete {
+  fill: var(--fail-fill);
+  height: 2em;
+}
+
+.delete:hover {
+  cursor: pointer;
+  filter: brightness(120%);
 }
 
 /* ----------------------------test---------------------------- */
@@ -129,15 +154,15 @@ input {
 }
 
 .test-success {
-  background-color: rgb(40, 167, 69, 0.5);
+  background-color: var(--success);
 }
 
 .test-fail {
-  background-color: rgb(220, 53, 69, 0.5);
+  background-color: var(--fail);
 }
 
 .error-msg {
-  background-color: rgb(220, 53, 69, 0.5);
+  background-color: var(--fail);
   text-align: left;
   border-radius: 6px;
   padding: 20px 40px;

@@ -72,7 +72,9 @@ class Result extends Component {
 
   printGrammar(grammar) {
     if (grammar.length > 0) {
-      return grammar.map((rule) => <p>{rule.lhs + "  →  " + rule.rhs}</p>);
+      return grammar.map((rule, index) => (
+        <p key={index}>{rule.lhs + "  →  " + rule.rhs.join(" | ")}</p>
+      ));
     }
     return <p className="fst-italic text-secondary">[Empty grammar]</p>;
   }
