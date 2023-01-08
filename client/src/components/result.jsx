@@ -1,38 +1,80 @@
 import React, { Component } from "react";
 
 class Result extends Component {
-  printGrammar(grammar) {
-    return grammar.map((rule) => <p>{rule.lhs + "  →  " + rule.rhs}</p>);
-  }
-
   render() {
     return (
-      <div className="row text-start">
-        <div className="card-shadow">
-          <div className="col-md-12 light-text">
-            <h1>Result</h1>
-            <hr />
-            <ul>
-              {this.props.conversionMessages.map((msg, id) => (
-                <li key={id}>{msg}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="row" style={{ padding: "0px 30px" }}>
-            <div className="col-md-6 light-text">
-              <h5>Original grammar</h5>
-              <hr />
-              {this.printGrammar(this.props.productionRules)}
-            </div>
-            <div className="col-md-6 light-text">
-              <h5>Converted grammar</h5>
-              <hr />
-              {this.printGrammar(this.props.resultProductionRules)}
+      <div className="row">
+        <div className="col card-shadow">
+          <div className="row justify-content-center">
+            <div className="col-11">
+              {this.renderHeader()}
+              {this.renderFinalResult()}
+              {this.renderSimplificationHistory()}
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  renderHeader() {
+    return (
+      <div className="col header">
+        <h1 className="highlighted">Result</h1>
+        <hr className="highlighted" />
+        <ul>
+          {this.props.conversionMessages.map((msg, id) => (
+            <li key={id}>{msg}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  renderFinalResult() {
+    return (
+      <div className="row header">
+        <div className="col-6">
+          <h5>Original grammar</h5>
+          <hr />
+          {this.printGrammar(this.props.productionRules)}
+        </div>
+        <div className="col-6">
+          <h5>Converted grammar</h5>
+          <hr />
+          {this.printGrammar(this.props.resultProductionRules)}
+        </div>
+      </div>
+    );
+  }
+
+  renderSimplificationHistory() {
+    return (
+      <div className="row header">
+        <div className="col">
+          <h5 className="highlighted">Simplification History</h5>
+          <hr className="highlighted" />
+
+          {this.props.simplificationTimeline.map((grammar, id) => (
+            <div className="col" key={id}>
+              <p>
+                <span className="highlighted">Step {id + 1}: </span>
+                {this.props.simplificationMessages[id]}
+              </p>
+              {this.printGrammar(grammar)}
+              <hr />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  printGrammar(grammar) {
+    if (grammar.length > 0) {
+      return grammar.map((rule) => <p>{rule.lhs + "  →  " + rule.rhs}</p>);
+    }
+    return <p className="fst-italic text-secondary">[Empty grammar]</p>;
   }
 }
 

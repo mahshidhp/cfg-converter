@@ -6,12 +6,11 @@ class SelectCFG extends Component {
       <div id="selectForm">
         <select
           className="form-select"
-          style={{ width: "100%" }}
           onChange={(e) => {
             this.props.handleSelectForm(e);
           }}
         >
-          <option selected>select CFG Form</option>
+          <option>select CFG Form</option>
           <option value="1">Chomsky Normal Form (CNF)</option>
           <option value="2">Greibach Normal Form (GNF)</option>
         </select>

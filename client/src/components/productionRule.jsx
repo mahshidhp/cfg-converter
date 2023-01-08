@@ -1,56 +1,60 @@
 import React, { Component, Fragment } from "react";
+const arrow = <span className="arrow"> &#8594; </span>;
 
 class ProductionRule extends Component {
-  state = {};
   render() {
-    const lhs = (
+    const { ruleIndex } = this.props;
+    return (
+      <div className="m-3">
+        {this.renderLHS(ruleIndex)}
+        {arrow}
+        {this.renderRHS(ruleIndex)}
+        {this.renderAddRhsButton(ruleIndex)}
+      </div>
+    );
+  }
+
+  renderLHS(ruleIndex) {
+    return (
       <input
+        className="lhs-input"
         value={this.props.lhs}
-        onKeyDown={(event) =>
-          this.props.handleKeyDown(event, this.props.ruleIndex, null)
-        }
+        onKeyDown={(event) => this.props.handleKeyDown(event, ruleIndex, null)}
         onChange={(event) => {
-          this.props.handleInputChange(event, this.props.ruleIndex, null);
+          this.props.handleInputChange(event, ruleIndex, null);
         }}
       />
     );
+  }
 
-    const rhs = this.props.rhs.map((r, rhsIndex) => (
-      <Fragment>
+  renderRHS(ruleIndex) {
+    return this.props.rhs.map((r, rhsIndex) => (
+      <Fragment key={rhsIndex}>
         <input
           value={r}
-          key={rhsIndex}
+          className="rhs-input"
           onKeyDown={(event) =>
-            this.props.handleKeyDown(event, this.props.ruleIndex, rhsIndex)
+            this.props.handleKeyDown(event, ruleIndex, rhsIndex)
           }
           onChange={(event) => {
-            this.props.handleInputChange(event, this.props.ruleIndex, rhsIndex);
+            this.props.handleInputChange(event, ruleIndex, rhsIndex);
           }}
         />
         <span className="arrow"> | </span>
       </Fragment>
     ));
+  }
 
-    const rhsBtn = (
+  renderAddRhsButton(ruleIndex) {
+    return (
       <button
         className="add-btn"
         onClick={() => {
-          this.props.addRHS(this.props.ruleIndex);
+          this.props.addRHS(ruleIndex);
         }}
       >
         +
       </button>
-    );
-
-    const arrow = <span className="arrow"> &#8594; </span>;
-
-    return (
-      <div className="m-3">
-        {lhs}
-        {arrow}
-        {rhs}
-        {rhsBtn}
-      </div>
     );
   }
 }

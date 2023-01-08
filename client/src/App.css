@@ -1,9 +1,26 @@
+:root {
+  --bg-color: #42474a;
+  --border-color: #37aa9c;
+  --accent-color: #1a1a1b;
+  --text-color: white;
+  --highlight-color: #94f3e4;
+}
+
+/* :root {
+  --bg-color: #fff2f2;
+  --border-color: #f47c7c;
+  --accent-color: #fad4d4;
+  --text-color: #4b4b4b;
+  --highlight-color: #4b4b4b;
+} */
+
 * {
   -webkit-transition: all 0.4s ease;
+  color: var(--text-color);
 }
 
 body {
-  background-image: linear-gradient(90deg, #193e51, #146666, #c3bd2e);
+  background-color: var(--bg-color) !important;
   min-height: 100%;
 }
 
@@ -11,18 +28,35 @@ html {
   height: 100%;
 }
 
+/* ----------------------------about---------------------------- */
+
+.about {
+  margin-bottom: 40px;
+  background-color: var(--accent-color);
+}
+
+.resource {
+  text-decoration: none;
+  color: var(--border-color) !important;
+  font-weight: 400;
+}
+
+/* ----------------------------cards---------------------------- */
+
 .card-shadow {
-  background-color: rgb(0, 0, 0, 0.3);
-  border: 5px solid rgb(195, 189, 46);
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 5px solid var(--border-color);
   border-radius: 10px;
-  padding: 40px;
-  margin: 40px;
+  padding: 40px 20px;
+  margin: 40px 20px;
   box-shadow: 3px 3px rgba(49, 49, 49, 0.349);
 }
 
 .card-shadow:hover {
-  padding: 60px;
+  padding: 60px 50px;
 }
+
+/* ----------------------------inputs---------------------------- */
 
 input {
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
@@ -30,53 +64,51 @@ input {
   border-radius: 6px;
   height: 35px;
   padding: 5px;
+  color: black;
 }
 
-#selectForm {
-  width: 30%;
-  margin: auto;
+.lhs-input {
+  width: 50px;
+  text-align: center;
 }
 
-.light-text {
-  color: white;
-  margin-bottom: 40px;
-  padding: 0px 30px;
-  font-weight: 300;
-  text-align: left;
+.rhs-input {
+  width: 100px;
 }
 
-.arrow {
-  font-size: 30px;
-  color: #c3bd2e;
-}
+/* ----------------------------buttons---------------------------- */
 
 .transparent-button {
-  background-color: #146666;
-  border: 2px solid #c3bd2e;
-  color: white;
+  background-color: var(--accent-color);
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
   padding: 8px;
   border-radius: 10px;
 }
 
 .transparent-button:hover {
-  background-color: #c3bd2e;
-  color: #193e51;
+  background-color: var(--border-color);
+  color: var(--bg-color);
   font-size: larger;
 }
 
 .main-button {
-  background-color: #c3bd2e;
-  color: #193e51;
-  border: 2px solid #c3bd2e;
+  background-color: var(--border-color);
+  color: var(--bg-color);
+  border: 2px solid var(--border-color);
   font-size: larger;
   padding: 8px;
   border-radius: 10px;
 }
 
+.main-button:hover {
+  font-size: x-large;
+}
+
 .add-btn {
-  background-color: #c3bd2e;
-  border: 2px solid #c3bd2e;
-  color: #193e51;
+  background-color: var(--border-color);
+  border: 2px solid var(--border-color);
+  color: var(--bg-color);
   font-weight: 600;
   padding: auto;
   width: 30px;
@@ -89,13 +121,7 @@ input {
   height: 35px;
 }
 
-.main-button:hover {
-  font-size: x-large;
-}
-
-a {
-  color: white !important;
-}
+/* ----------------------------test---------------------------- */
 
 .test-result {
   padding: 20px;
@@ -110,12 +136,46 @@ a {
   background-color: rgb(220, 53, 69, 0.5);
 }
 
-svg {
-  margin: 8px;
+.error-msg {
+  background-color: rgb(220, 53, 69, 0.5);
+  text-align: left;
+  border-radius: 6px;
+  padding: 20px 40px;
+  margin: 20px;
 }
 
-.resource {
-  text-decoration: none;
-  color: #c3bd2e !important;
-  font-weight: 400;
+/* ----------------------------------------------------------- */
+
+#selectForm {
+  width: 40%;
+  margin: auto;
+}
+
+.header {
+  margin-bottom: 40px;
+  padding: 0px 30px;
+}
+
+.highlighted {
+  color: var(--highlight-color);
+}
+
+.arrow {
+  font-size: 30px;
+  color: var(--border-color);
+}
+
+a {
+  color: var(--text-color);
+}
+
+a:hover {
+  color: var(--highlight-color) !important;
+}
+
+svg {
+  margin-right: 8px;
+  margin-bottom: 2px;
+  height: 1.5em;
+  width: 1.5em;
 }

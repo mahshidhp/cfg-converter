@@ -8,23 +8,14 @@ const EPSILON = String.fromCharCode(949);
 class Converter extends Component {
   constructor() {
     super();
-    //bind "this" for component methods
-    this.reset = this.reset.bind(this);
-    this.addRHS = this.addRHS.bind(this);
-    this.addProductionRule = this.addProductionRule.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleSelectForm = this.handleSelectForm.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.convert = this.convert.bind(this);
-    this.test = this.test.bind(this);
-    this.handleTestStringChange = this.handleTestStringChange.bind(this);
-    this.postData = this.postData.bind(this);
-
     this.state = {
       productionRules: [],
       resultProductionRules: [],
       conversionForm: null,
       conversionMessages: [],
+      simplificationTimeline: [],
+      simplificationMessages: [],
+      errorMessage: "",
 
       //test-component
       testString: "",
@@ -35,33 +26,40 @@ class Converter extends Component {
 
   render() {
     return (
-      <div className="container text-center m-4">
-        <InputGrammar
-          productionRules={this.state.productionRules}
-          reset={this.reset}
-          addProductionRule={this.addProductionRule}
-          addRHS={this.addRHS}
-          handleKeyDown={this.handleKeyDown}
-          handleSelectForm={this.handleSelectForm}
-          handleInputChange={this.handleInputChange}
-          convert={this.convert}
-        />
+      <div className="container">
+        <div className="row justify-content-center">
+          <InputGrammar
+            productionRules={this.state.productionRules}
+            reset={this.reset}
+            addProductionRule={this.addProductionRule}
+            addRHS={this.addRHS}
+            handleKeyDown={this.handleKeyDown}
+            handleSelectForm={this.handleSelectForm}
+            handleInputChange={this.handleInputChange}
+            convert={this.convert}
+            errorMessage={this.state.errorMessage}
+          />
+          <Test
+            test={this.test}
+            handleTestStringChange={this.handleTestStringChange}
+            isDerivedFromOriginalGrammar={
+              this.state.isDerivedFromOriginalGrammar
+            }
+            isDerivedFromResultGrammar={this.state.isDerivedFromResultGrammar}
+          />
+        </div>
         <Result
           productionRules={this.state.productionRules}
           resultProductionRules={this.state.resultProductionRules}
           conversionMessages={this.state.conversionMessages}
-        />
-        <Test
-          test={this.test}
-          handleTestStringChange={this.handleTestStringChange}
-          isDerivedFromOriginalGrammar={this.state.isDerivedFromOriginalGrammar}
-          isDerivedFromResultGrammar={this.state.isDerivedFromResultGrammar}
+          simplificationTimeline={this.state.simplificationTimeline}
+          simplificationMessages={this.state.simplificationMessages}
         />
       </div>
     );
   }
 
-  reset() {
+  reset = () => {
     this.setState({
       productionRules: [],
       resultProductionRules: [],
@@ -69,40 +67,63 @@ class Converter extends Component {
       testString: "",
       isDerivedFromOriginalGrammar: null,
       isDerivedFromResultGrammar: null,
+      simplificationTimeline: [],
+      simplificationMessages: [],
+      errorMessage: "",
     });
-  }
+  };
 
-  addRHS(ruleId) {
+  addRHS = (ruleId) => {
     const productionRules = this.state.productionRules;
     productionRules[ruleId].rhs.push(EPSILON);
-    this.setState({ productionRules });
-  }
+    this.setState({ productionRules }, () =>
+      this.changeFocusToCurrentRHS(ruleId)
+    );
+  };
 
-  addProductionRule() {
+  changeFocusToCurrentRHS = (ruleId) => {
+    const rhsInputElements = document.getElementsByClassName("rhs-input");
+    let rhsId = 0;
+    for (let i = 0; i <= ruleId; i++) {
+      rhsId += this.state.productionRules[i].rhs.length;
+    }
+    const currentRHS = rhsInputElements[rhsId - 1];
+    currentRHS.focus();
+  };
+
+  addProductionRule = () => {
     let productionRules = this.state.productionRules;
     const newRule =
       productionRules.length === 0
         ? { lhs: "S", rhs: [EPSILON] }
         : { lhs: null, rhs: [EPSILON] };
     productionRules = productionRules.concat(newRule);
-    this.setState({ productionRules });
-  }
+    this.setState({ productionRules }, () => this.changeFocusToLastLHS());
+  };
 
-  handleSelectForm(e) {
+  changeFocusToLastLHS = () => {
+    const lhsInputElements = document.getElementsByClassName("lhs-input");
+    const lastLhs = lhsInputElements[lhsInputElements.length - 1];
+    lastLhs.focus();
+  };
+
+  handleSelectForm = (e) => {
     this.setState({ conversionForm: e.target.value });
-  }
+  };
 
-  handleInputChange(event, ruleId, rhsId) {
+  handleInputChange = (event, ruleId, rhsId) => {
     const productionRules = this.state.productionRules;
-    if (rhsId == null) {
-      productionRules[ruleId].lhs = event.target.value;
+    const isLHS = rhsId == null;
+    const { value: inputValue } = event.target;
+    if (isLHS && inputValue.length < 2) {
+      productionRules[ruleId].lhs = inputValue;
     } else {
-      productionRules[ruleId].rhs[rhsId] = event.target.value;
+      productionRules[ruleId].rhs[rhsId] = inputValue;
     }
     this.setState({ productionRules });
-  }
+  };
 
-  handleKeyDown(e, ruleId, rhsId) {
+  handleKeyDown = (e, ruleId, rhsId) => {
     if (e.key === "|") {
       e.preventDefault();
       if (rhsId != null) {
@@ -112,13 +133,13 @@ class Converter extends Component {
       e.preventDefault();
       this.addProductionRule();
     }
-  }
+  };
 
-  handleTestStringChange(event) {
+  handleTestStringChange = (event) => {
     this.setState({ testString: event.target.value });
-  }
+  };
 
-  convert() {
+  convert = () => {
     const requestData = {
       grammar: this.state.productionRules,
       conversionForm: this.state.conversionForm,
@@ -128,11 +149,14 @@ class Converter extends Component {
       this.setState({
         resultProductionRules: data.convertedGrammar,
         conversionMessages: data.conversionMessages,
+        simplificationTimeline: data.simplificationTimeline,
+        simplificationMessages: data.simplificationMessages,
+        errorMessage: data.errorMessage,
       });
     });
-  }
+  };
 
-  test() {
+  test = () => {
     const requestData = {
       grammar: this.state.productionRules,
       resultGrammar: this.state.resultProductionRules,
@@ -146,9 +170,9 @@ class Converter extends Component {
         isDerivedFromResultGrammar: data.isDerivedFromResultGrammar,
       });
     });
-  }
+  };
 
-  async postData(url, data) {
+  postData = async (url, data) => {
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -157,7 +181,7 @@ class Converter extends Component {
       body: JSON.stringify(data),
     });
     return response.json();
-  }
+  };
 }
 
 export default Converter;

@@ -4,6 +4,31 @@ import SelectCFG from "./selectCFG";
 
 class InputGrammar extends Component {
   render() {
+    return (
+      <div className="col-lg card-shadow text-center">
+        {this.renderDescription()}
+        <SelectCFG handleSelectForm={this.props.handleSelectForm} />
+        {this.renderProductionRules()}
+        {this.renderButtons()}
+        {this.renderErrorMessage()}
+      </div>
+    );
+  }
+
+  renderErrorMessage() {
+    const { errorMessage } = this.props;
+    return (
+      errorMessage && (
+        <div className="error-msg">
+          {failIcon}
+          <span className="fw-bold">Error: </span>
+          {errorMessage}
+        </div>
+      )
+    );
+  }
+
+  renderProductionRules() {
     const productionRules = this.props.productionRules.map(
       (productionRule, ruleIndex) => (
         <ProductionRule
@@ -17,30 +42,20 @@ class InputGrammar extends Component {
         />
       )
     );
-
-    return (
-      <div className="row">
-        <div className="col-md-12 card-shadow">
-          {this.renderDescription()}
-          <SelectCFG handleSelectForm={this.props.handleSelectForm} />
-          {productionRules}
-          {this.renderButtons()}
-        </div>
-      </div>
-    );
+    return productionRules;
   }
 
   renderDescription() {
     return (
-      <div className="text-start light-text">
-        <h1>CFG</h1>
-        <p>
+      <div className="text-start header">
+        <h1 className="highlighted">CFG</h1>
+        <p className="highlighted">
           Enter your context free grammar (CFG) and select normal form to
           convert.
           <br />
           Use "S" as start symbol.
         </p>
-        <hr />
+        <hr className="highlighted" />
       </div>
     );
   }
@@ -66,5 +81,11 @@ class InputGrammar extends Component {
     );
   }
 }
+
+const failIcon = (
+  <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+  </svg>
+);
 
 export default InputGrammar;
