@@ -1,5 +1,5 @@
-from util import *
-from Rule import Rule
+from converter.util import *
+from converter.Rule import Rule
 from collections import defaultdict
 import random
 import string

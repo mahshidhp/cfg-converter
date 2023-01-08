@@ -1,4 +1,4 @@
-from util import *
+from converter.util import *
 
 """
 shows a grammar rule in the form: LHS -> RHS

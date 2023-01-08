@@ -1,4 +1,4 @@
-from Rule import Rule
+from converter.Rule import Rule
 
 
 start_symbol = 'S'
@@ -39,7 +39,7 @@ class EarleyState(object):
     def __str__(self):
         return self.str_helper() + \
                ' (' + \
-               ', '.join(self.str_helper() for s in self.back_pointers) +\
+               ', '.join(s.str_helper() for s in self.back_pointers) +\
                ')'
 
     def next(self):
@@ -113,11 +113,11 @@ class Chart(object):
         return '\n\n'.join([("Chart[%d]:\n" % i) + str(entry) for i, entry in enumerate(self.entries)])
 
     @staticmethod
-    def init(l):
+    def init(length):
         """
         Initializes a chart with l entries (Including the dummy start state).
         """
-        return Chart([(ChartEntry([]) if i > 0 else ChartEntry([EarleyState.init()])) for i in range(l)])
+        return Chart([(ChartEntry([]) if i > 0 else ChartEntry([EarleyState.init()])) for i in range(length)])
 
 
 class EarleyParser(object):

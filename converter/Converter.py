@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Simplifier import Simplifier
+from converter.Simplifier import Simplifier
 
 
 class Converter(ABC):

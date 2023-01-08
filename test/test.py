@@ -1,9 +1,9 @@
 import copy
 import json
 import random
-from Grammar import Grammar
-from Chomsky import Chomsky
-from Greibach import Greibach
+from converter.Grammar import Grammar
+from converter.Chomsky import Chomsky
+from converter.Greibach import Greibach
 
 CHOMSKY = 1
 GREIBACH = 2
@@ -44,7 +44,7 @@ def test(grammar, conversion_form):
 
 
 if __name__ == "__main__":
-    rules_arr = json.loads(open("sample_grammars.json", "r").read())
+    rules_arr = json.loads(open("./sample_grammars.json", "r").read())
     for rules in rules_arr:
         grammar = Grammar(copy.deepcopy(rules))
         test(grammar, CHOMSKY)

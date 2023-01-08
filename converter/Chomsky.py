@@ -1,6 +1,6 @@
-from Converter import Converter
-from Rule import Rule
-from util import *
+from converter.Converter import Converter
+from converter.Rule import Rule
+from converter.util import *
 
 
 class Chomsky(Converter):

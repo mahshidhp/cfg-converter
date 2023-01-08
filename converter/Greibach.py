@@ -1,7 +1,7 @@
-from Chomsky import Chomsky
-from Converter import Converter
-from Rule import Rule
-from util import *
+from converter.Chomsky import Chomsky
+from converter.Converter import Converter
+from converter.Rule import Rule
+from converter.util import *
 
 """
 Please watch these tutorial for further explanations:

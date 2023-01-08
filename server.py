@@ -1,10 +1,10 @@
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS, cross_origin
 
-from Chomsky import Chomsky
-from Greibach import Greibach
-from GrammarParser import EarleyParser
-from Grammar import Grammar
+from converter.Chomsky import Chomsky
+from converter.Greibach import Greibach
+from converter.GrammarParser import EarleyParser
+from converter.Grammar import Grammar
 
 app = Flask(__name__, static_folder="client/build", static_url_path="")
 CORS(app)
