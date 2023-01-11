@@ -91,7 +91,6 @@ class InputGrammar extends Component {
   renderButtons() {
     return (
       <div className="text-center">
-        <br />
         <button
           className="m-2 transparent-button"
           onClick={this.props.addProductionRule}

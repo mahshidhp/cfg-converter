@@ -34,12 +34,12 @@ class Result extends Component {
   renderFinalResult() {
     return (
       <div className="row header">
-        <div className="col-6">
+        <div className="col-sm-6">
           <h5>Original grammar</h5>
           <hr />
           {this.printGrammar(this.props.productionRules)}
         </div>
-        <div className="col-6">
+        <div className="col-sm-6">
           <h5>Converted grammar</h5>
           <hr />
           {this.printGrammar(this.props.resultProductionRules)}
