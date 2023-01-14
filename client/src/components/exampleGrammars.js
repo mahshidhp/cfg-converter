@@ -7,10 +7,9 @@ const exampleGrammars = [
   ],
   //example 2
   [
-    { lhs: "", rhs: [""] },
-    { lhs: "", rhs: [""] },
-    { lhs: "", rhs: [""] },
-    { lhs: "", rhs: [""] },
+    { lhs: "S", rhs: ["F", "SQS"] },
+    { lhs: "F", rhs: ["x"] },
+    { lhs: "Q", rhs: ["+", "*"] },
   ],
   //example 3
   [

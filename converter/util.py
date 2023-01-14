@@ -2,7 +2,7 @@ import itertools
 
 
 def is_terminal(char):
-    return char.islower() or char == 'ε'
+    return char.islower() or char in list('ε!*+-/,;:"\'')
 
 
 def is_non_terminal(char):
