@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import Converter from "./components/converter";
 import Navbar from "./components/navbar";
 import About from "./components/about";
-
+import Footer from "./components/footer";
 import "./App.css";
 
 class App extends Component {
@@ -19,6 +19,7 @@ class App extends Component {
         />
         <About />
         <Converter />
+        <Footer />
       </Fragment>
     );
   }
