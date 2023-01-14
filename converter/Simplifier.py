@@ -12,10 +12,27 @@ class Simplifier:
         self.messages = []
 
     def simplify(self):
+        self.add_new_start_symbol()
         self.remove_redundant_non_terminals()
         self.remove_unreachable_symbols()
-        self.remove_unit_productions()
-        self.remove_null_productions()
+        # self.remove_unit_productions()
+        # self.remove_null_productions()
+
+    def add_new_start_symbol(self):
+        if self.check_start_symbol_is_used():
+            new_start_symbol = "$"
+            self.messages.append(f"'{new_start_symbol}' is now the start symbol.")
+            new_rule = Rule(new_start_symbol, self.grammar.start_symbol)
+            self.grammar.rules.insert(0, new_rule)
+            self.grammar.non_terminals.add(new_start_symbol)
+            self.grammar.start_symbol = new_start_symbol
+            self.grammar_timeline.append(self.grammar)
+
+    def check_start_symbol_is_used(self):
+        for rule in self.grammar.rules:
+            if self.grammar.start_symbol in rule.get_rhs_symbols():
+                return True
+        return False
 
     """
     find non-terminals that don't generate a terminal and remove rules containing them

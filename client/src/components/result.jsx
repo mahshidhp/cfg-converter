@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 
 class Result extends Component {
   render() {
@@ -9,6 +9,7 @@ class Result extends Component {
             <div className="col-11">
               {this.renderHeader()}
               {this.renderFinalResult()}
+              {this.renderExamples()}
               {this.renderSimplificationHistory()}
             </div>
           </div>
@@ -22,11 +23,6 @@ class Result extends Component {
       <div className="col header">
         <h1 className="highlighted">Result</h1>
         <hr className="highlighted" />
-        <ul>
-          {this.props.conversionMessages.map((msg, id) => (
-            <li key={id}>{msg}</li>
-          ))}
-        </ul>
       </div>
     );
   }
@@ -43,6 +39,20 @@ class Result extends Component {
           <h5>Converted grammar</h5>
           <hr />
           {this.printGrammar(this.props.resultProductionRules)}
+        </div>
+      </div>
+    );
+  }
+
+  renderExamples() {
+    return (
+      <div className="row header">
+        <hr />
+        <div className="col-sm-6">
+          {this.printExample(this.props.originalGrammarExamples)}
+        </div>
+        <div className="col-sm-6">
+          {this.printExample(this.props.resultGrammarExamples)}
         </div>
       </div>
     );
@@ -77,6 +87,15 @@ class Result extends Component {
       ));
     }
     return <p className="fst-italic text-secondary">[Empty grammar]</p>;
+  }
+
+  printExample(examples) {
+    return (
+      <Fragment>
+        <p className="highlighted">Example words:</p>
+        <p>{examples.join(", ")}</p>
+      </Fragment>
+    );
   }
 }
 

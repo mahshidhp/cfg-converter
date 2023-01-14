@@ -10,7 +10,6 @@ class Converter(ABC):
             self.grammar = self.simplifier.grammar
         else:
             self.grammar = grammar
-        self.messages = []
 
     @abstractmethod
     def convert(self):

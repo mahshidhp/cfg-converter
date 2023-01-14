@@ -1,9 +1,9 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, make_response
 from flask_cors import CORS, cross_origin
 
 from converter.Chomsky import Chomsky
 from converter.Greibach import Greibach
-from converter.GrammarParser import EarleyParser
+from converter.Parser import Parser
 from converter.Grammar import Grammar
 
 app = Flask(__name__, static_folder="client/build", static_url_path="")
@@ -37,7 +37,6 @@ def convert():
             "simplificationTimeline": [grammar.get_json_compact_rules() for grammar in converter.simplifier.grammar_timeline],
             "simplificationMessages": converter.simplifier.messages,
             "convertedGrammar": converter.grammar.get_json_compact_rules(),
-            "conversionMessages": converter.messages,
             "errorMessage": "",
         }
 
@@ -47,7 +46,6 @@ def convert():
             "simplificationTimeline": [],
             "simplificationMessages": [],
             "convertedGrammar": [],
-            "conversionMessages": []
         }
 
 
@@ -59,11 +57,26 @@ def test():
     grammar = Grammar(request_body['grammar'])
     result_grammar = Grammar(request_body['resultGrammar'])
 
-    derives_from_original_grammar = EarleyParser(string, grammar).run()
-    derives_from_converted_grammar = EarleyParser(string, result_grammar).run()
+    derives_from_original_grammar = Parser(grammar, string).parse()
+    derives_from_converted_grammar = Parser(result_grammar, string).parse()
     return {
         "isDerivedFromOriginalGrammar": derives_from_original_grammar,
         "isDerivedFromResultGrammar": derives_from_converted_grammar
+    }
+
+
+@app.route("/examples", methods=["POST"])
+@cross_origin()
+def generate_example_word():
+    request_body = request.get_json()
+    count = request_body['count'] or 5
+    original_grammar = Grammar(request_body['grammar'])
+    result_grammar = Grammar(request_body['resultGrammar'])
+    original_grammar_examples = original_grammar.generate_example_words(count)
+    result_grammar_examples = result_grammar.generate_example_words(count)
+    return {
+        "originalGrammarExamples": original_grammar_examples,
+        "resultGrammarExamples": result_grammar_examples
     }
 
 

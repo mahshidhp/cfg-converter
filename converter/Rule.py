@@ -30,6 +30,9 @@ class Rule:
     def __str__(self):
         return self.lhs + "  ->  " + self.rhs
 
+    def __repr__(self):
+        return self.__str__()
+
     def __eq__(self, other):
         if type(other) is Rule:
             return self.lhs == other.lhs and self.rhs == other.rhs

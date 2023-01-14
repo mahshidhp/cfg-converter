@@ -21,7 +21,6 @@ class Greibach(Converter):
     def convert(self):
         chomsky_converter = Chomsky(self.grammar, should_simplify=False)
         self.grammar = chomsky_converter.convert()
-        self.messages = chomsky_converter.messages
 
         self.map_non_terminal_to_ordered_symbols()
         self.sort_rules()

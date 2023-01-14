@@ -5,11 +5,6 @@ from converter.util import *
 
 class Chomsky(Converter):
     def convert(self):
-        if self.check_start_symbol_is_used():
-            self.messages.append("'$' is now the start symbol.")
-            self.grammar.rules.insert(0, Rule("$", self.grammar.start_symbol))
-            self.grammar.non_terminals.add("$")
-
         while True:
             for rule in self.grammar.rules:
                 if len(rule.rhs) == 2 and (is_terminal(rule.rhs[0]) or is_terminal(rule.rhs[1])):
@@ -50,9 +45,3 @@ class Chomsky(Converter):
                 break
 
         return self.grammar
-
-    def check_start_symbol_is_used(self):
-        for rule in self.grammar.rules:
-            if self.grammar.start_symbol in rule.get_rhs_symbols():
-                return True
-        return False

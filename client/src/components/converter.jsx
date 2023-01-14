@@ -22,6 +22,10 @@ class Converter extends Component {
       testString: "",
       isDerivedFromOriginalGrammar: null,
       isDerivedFromResultGrammar: null,
+
+      //examples
+      originalGrammarExamples: [],
+      resultGrammarExamples: [],
     };
   }
 
@@ -54,9 +58,10 @@ class Converter extends Component {
         <Result
           productionRules={this.state.productionRules}
           resultProductionRules={this.state.resultProductionRules}
-          conversionMessages={this.state.conversionMessages}
           simplificationTimeline={this.state.simplificationTimeline}
           simplificationMessages={this.state.simplificationMessages}
+          originalGrammarExamples={this.state.originalGrammarExamples}
+          resultGrammarExamples={this.state.resultGrammarExamples}
         />
       </div>
     );
@@ -66,13 +71,14 @@ class Converter extends Component {
     this.setState({
       productionRules: [],
       resultProductionRules: [],
-      conversionMessages: [],
       testString: "",
       isDerivedFromOriginalGrammar: null,
       isDerivedFromResultGrammar: null,
       simplificationTimeline: [],
       simplificationMessages: [],
       errorMessage: "",
+      originalGrammarExamples: [],
+      resultGrammarExamples: [],
     });
   };
 
@@ -181,14 +187,16 @@ class Converter extends Component {
       conversionForm: this.state.conversionForm,
     };
     this.postData("/convert", requestData).then((data) => {
-      console.log("conversion response", data);
-      this.setState({
-        resultProductionRules: data.convertedGrammar,
-        conversionMessages: data.conversionMessages,
-        simplificationTimeline: data.simplificationTimeline,
-        simplificationMessages: data.simplificationMessages,
-        errorMessage: data.errorMessage,
-      });
+      console.log("convert", data);
+      this.setState(
+        {
+          resultProductionRules: data.convertedGrammar,
+          simplificationTimeline: data.simplificationTimeline,
+          simplificationMessages: data.simplificationMessages,
+          errorMessage: data.errorMessage,
+        },
+        () => this.getExampleWords()
+      );
     });
   };
 
@@ -200,10 +208,24 @@ class Converter extends Component {
     };
 
     this.postData("/test", requestData).then((data) => {
-      console.log("test response", data);
       this.setState({
         isDerivedFromOriginalGrammar: data.isDerivedFromOriginalGrammar,
         isDerivedFromResultGrammar: data.isDerivedFromResultGrammar,
+      });
+    });
+  };
+
+  getExampleWords = () => {
+    const requestData = {
+      grammar: this.state.productionRules,
+      resultGrammar: this.state.resultProductionRules,
+      count: 10,
+    };
+
+    this.postData("/examples", requestData).then((data) => {
+      this.setState({
+        originalGrammarExamples: data.originalGrammarExamples,
+        resultGrammarExamples: data.resultGrammarExamples,
       });
     });
   };

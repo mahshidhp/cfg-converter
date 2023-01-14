@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class About extends Component {
   render() {
     return (
-      <div className="px-4 py-5 text-center about">
+      <div className="py-5 text-center about">
         <div className="col-8 mx-auto">
           <h1>CFG Converter</h1>
           <div className="text-start">

@@ -9,7 +9,7 @@ class Navbar extends Component {
       >
         <div className="container-fluid">
           <button
-            className="navbar-toggler"
+            className="navbar-toggler order-1"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarsExample03"
@@ -20,7 +20,10 @@ class Navbar extends Component {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarsExample03">
+          <div
+            className="collapse navbar-collapse order-3"
+            id="navbarsExample03"
+          >
             <ul className="navbar-nav me-auto mb-2 mb-sm-0">
               <li className="nav-item">
                 <a
@@ -35,7 +38,7 @@ class Navbar extends Component {
             </ul>
           </div>
           {/* dark/light mode toggle */}
-          <div className="form-check form-switch form-check-reverse">
+          <div className="form-check form-switch form-check-reverse order-2 order-sm-3">
             {this.renderNightModeIcon()}
             <input
               className="form-check-input mx-2"

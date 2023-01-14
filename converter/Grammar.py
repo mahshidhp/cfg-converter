@@ -16,6 +16,9 @@ class Grammar:
         if not self.check_is_CFG():
             raise Exception("Input grammar is not CFG.")
 
+    def has_rules(self):
+        return len(self.rules) != 0
+
     def detect_start_symbol(self):
         return '$' if '$' in self.non_terminals else 'S'
 
@@ -100,13 +103,33 @@ class Grammar:
                 rules_dict[rule.lhs].append(rule.rhs)
         return [{"rhs": rhs, "lhs": lhs} for lhs, rhs in rules_dict.items()]
 
-    # def is_tag(self, sym):
-    #     """
-    #     Checks whether the given symbol is a tag, i.e. a non-terminal with rules
-    #     to solely terminals.
-    #     """
-    #
-    #     if is_non_terminal(sym):
-    #         rules = [self.rules[i] for i in self.find_rules_by_lhs(sym)]
-    #         return all(is_terminal(s) for r in rules for s in r.rhs)
-    #     return False
+    def generate_example_words(self, num):
+        if not self.has_rules():
+            return []
+        words = []
+        # set a maximum loop count for languages with less than "num" words
+        for _ in range(100):
+            if len(words) >= num:
+                break
+            new_word = self.derive_example_word()
+            if new_word and new_word not in words and len(new_word) < 20:
+                words.append(new_word)
+        return words
+
+    def derive_example_word(self):
+        current_word = self.start_symbol
+        # set a maximum loop count for grammars not deriving a word
+        for _ in range(100):
+            non_terminals = [s for s in list(current_word) if is_non_terminal(s)]
+            if not non_terminals:
+                break
+            for non_t in non_terminals:
+                next_possible_rules = self.__getitem__(non_t)
+                if not next_possible_rules:
+                    return
+                selected_rule = random.choice(next_possible_rules)
+                current_word = current_word.replace(non_t, selected_rule.rhs, 1)
+
+        current_word = current_word.replace('ε', '')
+        return current_word
+
