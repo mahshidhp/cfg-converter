@@ -5,6 +5,7 @@ from converter.Chomsky import Chomsky
 from converter.Greibach import Greibach
 from converter.Parser import Parser
 from converter.Grammar import Grammar
+from converter.Exceptions import *
 
 app = Flask(__name__, static_folder="client/build", static_url_path="")
 CORS(app)
@@ -23,7 +24,7 @@ def convert():
         if request_body['conversionForm']:
             conversion_form = int(request_body['conversionForm'])
         else:
-            raise Exception("No conversion form is selected.")
+            raise FormNotSelected("No conversion form is selected.")
 
         converter = None
         if conversion_form == CHOMSKY:
@@ -40,7 +41,7 @@ def convert():
             "errorMessage": "",
         }
 
-    except Exception as e:
+    except (FormNotSelected, GrammarIsNotCFG) as e:
         return {
             "errorMessage": str(e),
             "simplificationTimeline": [],

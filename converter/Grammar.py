@@ -1,5 +1,6 @@
 from converter.util import *
 from converter.Rule import Rule
+from converter.Exceptions import GrammarIsNotCFG
 from collections import defaultdict
 import random
 import string
@@ -14,7 +15,7 @@ class Grammar:
         self.detect_symbols()
         self.start_symbol = self.detect_start_symbol()
         if not self.check_is_CFG():
-            raise Exception("Input grammar is not CFG.")
+            raise GrammarIsNotCFG("Input grammar is not CFG.")
 
     def has_rules(self):
         return len(self.rules) != 0
@@ -55,6 +56,12 @@ class Grammar:
     def build_rules(self, rules):
         rules = self.split_rules(rules)
         self.rules = [Rule(rule["lhs"], rule["rhs"]) for rule in rules]
+        self.remove_rules_whitespaces()
+
+    def remove_rules_whitespaces(self):
+        for rule in self.rules:
+            rule.lhs = ''.join(rule.lhs.split())
+            rule.rhs = ''.join(rule.rhs.split())
 
     def check_is_CFG(self):
         """
@@ -103,13 +110,13 @@ class Grammar:
                 rules_dict[rule.lhs].append(rule.rhs)
         return [{"rhs": rhs, "lhs": lhs} for lhs, rhs in rules_dict.items()]
 
-    def generate_example_words(self, num):
+    def generate_example_words(self, count):
         if not self.has_rules():
             return []
         words = []
-        # set a maximum loop count for languages with less than "num" words
+        # set a maximum loop count for languages with less than "count" words
         for _ in range(100):
-            if len(words) >= num:
+            if len(words) >= count:
                 break
             new_word = self.derive_example_word()
             if new_word and new_word not in words and len(new_word) < 20:
