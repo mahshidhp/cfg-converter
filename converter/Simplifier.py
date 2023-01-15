@@ -15,8 +15,8 @@ class Simplifier:
         self.add_new_start_symbol()
         self.remove_redundant_non_terminals()
         self.remove_unreachable_symbols()
-        # self.remove_unit_productions()
-        # self.remove_null_productions()
+        self.remove_null_productions()
+        self.remove_unit_productions()
 
     def add_new_start_symbol(self):
         if self.check_start_symbol_is_used():
@@ -26,7 +26,7 @@ class Simplifier:
             self.grammar.rules.insert(0, new_rule)
             self.grammar.non_terminals.add(new_start_symbol)
             self.grammar.start_symbol = new_start_symbol
-            self.grammar_timeline.append(self.grammar)
+            self.grammar_timeline.append(copy.deepcopy(self.grammar))
 
     def check_start_symbol_is_used(self):
         for rule in self.grammar.rules:
@@ -106,19 +106,33 @@ class Simplifier:
     2- Delete A -> B from grammar
     """
     def remove_unit_productions(self):
-        unit_productions = []
-        while True:
+        current = dict().fromkeys(self.grammar.non_terminals)
+        current = {key: {key} for key in current}
+        prev = dict()
+        while current != prev:
+            prev = copy.deepcopy(current)
             for rule in self.grammar.rules:
                 if rule.is_unit_production():
-                    unit_productions.append(str(rule))
-                    # if rule.rhs == self.grammar.start_symbol:
-                    #     self.grammar.start_symbol = rule.lhs
-                    for index in self.grammar.find_rules_by_lhs(rule.rhs):
-                        self.grammar.rules[index].lhs = rule.lhs
-                    self.grammar.rules.remove(rule)
-                    break
-            else:
-                break
+                    for non_t, non_t_unit_set in current.items():
+                        if rule.lhs in non_t_unit_set:
+                            non_t_unit_set.add(rule.rhs)
+
+        new_rules = []
+        for non_t_a, non_t_a_unit_set in current.items():
+            for non_t_b in non_t_a_unit_set:
+                non_t_b_rules = self.grammar[non_t_b]
+                for rule in non_t_b_rules:
+                    if not rule.is_unit_production():
+                        new_rule = Rule(non_t_a, rule.rhs)
+                        new_rules.append(new_rule)
+
+        unit_productions = [str(rule) for rule in self.grammar.rules if rule.is_unit_production()]
+        self.grammar.rules = [rule for rule in self.grammar.rules if not rule.is_unit_production()]
+
+        for rule in new_rules:
+            if rule not in self.grammar.rules:
+                self.grammar.rules.append(rule)
+
         self.generate_unit_production_message(unit_productions)
         self.grammar_timeline.append(copy.deepcopy(self.grammar))
 
