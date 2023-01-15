@@ -7,14 +7,20 @@
   --fail: rgb(220, 53, 69, 0.5);
   --fail-fill: rgb(220, 53, 69);
   --success: rgb(40, 167, 69, 0.5);
+  --shadow: 0.1;
 }
 
+/* light theme variables */
 /* :root {
   --bg-color: #fff2f2;
   --border-color: #f47c7c;
   --accent-color: #fad4d4;
   --text-color: #4b4b4b;
   --highlight-color: #4b4b4b;
+  --fail: rgb(220, 53, 69, 0.5);
+  --fail-fill: rgb(220, 53, 69);
+  --success: rgb(40, 167, 69, 0.5);
+  --shadow: 0.01;
 } */
 
 * {
@@ -29,6 +35,7 @@ body {
 
 html {
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 /* ----------------------------about---------------------------- */
@@ -47,12 +54,12 @@ html {
 /* ----------------------------cards---------------------------- */
 
 .card-shadow {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, var(--shadow));
   border: 5px solid var(--border-color);
   border-radius: 10px;
   padding: 40px 20px;
   margin: 40px 20px;
-  box-shadow: 3px 3px rgba(49, 49, 49, 0.349);
+  box-shadow: 5px 5px rgba(49, 49, 49, 0.349);
 }
 
 .card-shadow:hover {

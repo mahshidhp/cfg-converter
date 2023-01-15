@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import InputGrammar from "./inputGrammar";
 import Test from "./test";
 import Result from "./result";
-import exampleGrammars from "./exampleGrammars";
+import exampleGrammars from "../sampleGrammars.json";
 
 const EPSILON = String.fromCharCode(949);
 

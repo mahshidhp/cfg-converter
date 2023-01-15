@@ -34,12 +34,14 @@ class App extends Component {
       root.style.setProperty("--accent-color", "#1a1a1b");
       root.style.setProperty("--text-color", "white");
       root.style.setProperty("--highlight-color", "#94f3e4");
+      root.style.setProperty("--shadow", 0.1);
     } else {
       root.style.setProperty("--bg-color", "#fff2f2");
       root.style.setProperty("--border-color", "#f47c7c");
       root.style.setProperty("--accent-color", "#fad4d4");
       root.style.setProperty("--text-color", "#4b4b4b");
       root.style.setProperty("--highlight-color", "#4b4b4b");
+      root.style.setProperty("--shadow", 0.01);
     }
   };
 }

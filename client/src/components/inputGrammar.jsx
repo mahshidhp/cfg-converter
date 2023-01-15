@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import ProductionRule from "./productionRule";
 import SelectCFG from "./selectCFG";
+import exampleGrammars from "../sampleGrammars.json";
 
 class InputGrammar extends Component {
   render() {
@@ -47,14 +48,21 @@ class InputGrammar extends Component {
   }
 
   renderDescription() {
+    const terminals = ["ε", "!", "*", "+", "-", "/", ",", ";", ":", '"', "'"];
     return (
       <div className="text-start header">
         <h1 className="highlighted">CFG</h1>
         <p className="highlighted">
           Enter your context free grammar (CFG) and select normal form to
           convert.
+        </p>
+        <p>
+          - Use "S" as start symbol.
           <br />
-          Use "S" as start symbol.
+          - Use upper-case letters as nont-terminals.
+          <br />- Use lower-case letters, numbers and
+          {" " + terminals.join(" ") + " "}
+          as terminals.
         </p>
         <p>You can use example grammars:</p>
         {this.renderExampleGrammarButtons()}
@@ -66,24 +74,14 @@ class InputGrammar extends Component {
   renderExampleGrammarButtons() {
     return (
       <Fragment>
-        <button
-          className="btn-sm example-btn"
-          onClick={() => this.props.handleExampleInputLoad(0)}
-        >
-          Example 1
-        </button>
-        <button
-          className="btn-sm example-btn"
-          onClick={() => this.props.handleExampleInputLoad(1)}
-        >
-          Example 2
-        </button>
-        <button
-          className="btn-sm example-btn"
-          onClick={() => this.props.handleExampleInputLoad(2)}
-        >
-          Example 3
-        </button>
+        {exampleGrammars.map((example, i) => (
+          <button
+            className="btn-sm example-btn"
+            onClick={() => this.props.handleExampleInputLoad(i)}
+          >
+            Example {i + 1}
+          </button>
+        ))}
       </Fragment>
     );
   }
@@ -101,9 +99,14 @@ class InputGrammar extends Component {
           Reset
         </button>
         <br />
-        <button className="btn-lg m-2 main-button" onClick={this.props.convert}>
-          Convert
-        </button>
+        <a href="#result">
+          <button
+            className="btn-lg m-2 main-button"
+            onClick={this.props.convert}
+          >
+            Convert
+          </button>
+        </a>
       </div>
     );
   }
