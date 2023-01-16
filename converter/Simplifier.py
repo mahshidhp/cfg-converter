@@ -17,6 +17,7 @@ class Simplifier:
         self.remove_unreachable_symbols()
         self.remove_null_productions()
         self.remove_unit_productions()
+        self.sort_rules()
 
     def add_new_start_symbol(self):
         if self.check_start_symbol_is_used():
@@ -45,7 +46,7 @@ class Simplifier:
             for rule in self.grammar.rules:
                 # check if current rule derives any of current_set symbols
                 rhs_current_set_intersection = [symbol for symbol in rule.get_rhs_symbols() if symbol in current_set]
-                if len(rhs_current_set_intersection) > 0:
+                if len(rhs_current_set_intersection) == len(rule.rhs):
                     current_set.add(rule.lhs)
 
         redundant_symbols = self.grammar.non_terminals.difference(current_set)
@@ -157,14 +158,14 @@ class Simplifier:
         nullable_non_terminals = []
         while True:
             for rule in self.grammar.rules:
-                if rule.rhs == EPSILON:
+                if rule.rhs == EPSILON and rule.lhs != self.grammar.start_symbol:
                     nullable_non_terminals.append(rule.lhs)
-                    if rule.lhs != self.grammar.start_symbol:
-                        self.grammar.rules.remove(rule)
+                    self.grammar.rules.remove(rule)
                     break
                 # check if rhs is all non-terminals and all of them are nullable
                 elif len(rule.get_rhs_symbols()) == len(rule.get_rhs_non_terminals()) and \
-                        all(t in nullable_non_terminals for t in rule.get_rhs_non_terminals()):
+                        all(t in nullable_non_terminals for t in rule.get_rhs_non_terminals()) and \
+                        rule.lhs not in nullable_non_terminals:
                     nullable_non_terminals.append(rule.lhs)
                     break
             else:
@@ -185,7 +186,8 @@ class Simplifier:
             combinations = find_all_combinations_of_arr(occ_indices)
             for comb in combinations:
                 new_rhs = "".join([char for ind, char in enumerate(rule.rhs) if ind not in comb])
-                new_rules.append(Rule(rule.lhs, new_rhs))
+                if new_rhs:
+                    new_rules.append(Rule(rule.lhs, new_rhs))
         self.grammar.rules += new_rules
 
     def generate_null_production_message(self, nullable_non_terminals):
@@ -197,3 +199,14 @@ class Simplifier:
             null_productions_str = ", ".join(nullable_non_terminals)
             self.messages.append(null_productions_str + " were nullable.")
 
+
+    """
+    change order of production rules so that rules with $ and S come first
+    """
+    def sort_rules(self):
+        dollar_production = self.grammar["$"]
+        s_productions = self.grammar["S"]
+        other_productions = [rule for rule in self.grammar.rules if rule not in dollar_production + s_productions]
+        self.grammar.rules = dollar_production + s_productions + other_productions
+        self.messages.append("Rules are sorted now.")
+        self.grammar_timeline.append(copy.deepcopy(self.grammar))
