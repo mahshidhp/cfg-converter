@@ -26,6 +26,7 @@ class Greibach(Converter):
         self.sort_rules()
         self.remove_left_recursion()
         self.make_rhs_first_symbol_terminal()
+        self.sort()
         return self.grammar
 
     def map_non_terminal_to_ordered_symbols(self):
@@ -50,11 +51,15 @@ class Greibach(Converter):
             for index, rule in enumerate(self.grammar.rules):
                 # Check if i > j
                 if is_non_terminal(rule.rhs[0]) and self.mapping[rule.lhs] > self.mapping[rule.rhs[0]]:
-                    indices = self.grammar.find_rules_by_lhs(rule.rhs[0])
-                    for idx in indices:
-                        # substitute Aj using production rules
-                        new_rule_rhs = self.grammar.rules[idx].rhs + rule.rhs[1:]
-                        self.grammar.rules.append(Rule(rule.lhs, new_rule_rhs))
+                    matching_rules = self.grammar[rule.rhs[0]]
+                    new_rules = []
+                    # substitute Aj using production rules
+                    for r in matching_rules:
+                        # avoid left recursion
+                        if r.lhs != r.rhs[0]:
+                            new_rule = Rule(rule.lhs, r.rhs + rule.rhs[1:])
+                            new_rules.append(new_rule)
+                    self.grammar.rules += new_rules
                     self.grammar.rules.remove(rule)
                     break
             else:
@@ -64,15 +69,25 @@ class Greibach(Converter):
         while True:
             for index, rule in enumerate(self.grammar.rules):
                 if is_non_terminal(rule.rhs[0]) and rule.lhs == rule.rhs[0]:
-                    new_non_terminal = self.grammar.get_unused_non_terminal()
-                    self.grammar.rules.append(Rule(new_non_terminal, rule.rhs[1:]))
-                    self.grammar.rules.append(Rule(new_non_terminal, rule.rhs[1:]+new_non_terminal))
+                    # find all recursive rules with same lhs
+                    recursive_rules = [r for r in self.grammar[rule.lhs] if r.lhs == r.rhs[0]]
 
-                    indices = self.grammar.find_rules_by_lhs(rule.lhs)
-                    for idx in indices:
-                        if idx != index:
-                            self.grammar.rules.append(Rule(rule.lhs, self.grammar.rules[idx].rhs + new_non_terminal))
-                    self.grammar.rules.remove(rule)
+                    new_symbols = []
+                    for rule2 in recursive_rules:
+                        new_non_terminal = self.grammar.get_unused_non_terminal()
+                        new_symbols.append(new_non_terminal)
+                        self.grammar.rules.append(Rule(new_non_terminal, rule2.rhs[1:]))
+                        self.grammar.rules.append(Rule(new_non_terminal, rule2.rhs[1:]+new_non_terminal))
+
+                    self.grammar.rules = [rule for rule in self.grammar.rules if rule not in recursive_rules]
+
+                    for sym in new_symbols:
+                        lhs_alternative_rules = self.grammar[rule.lhs]
+                        new_rules = []
+                        for r in lhs_alternative_rules:
+                            new_rules.append(Rule(rule.lhs, r.rhs + sym))
+                        self.grammar.rules += new_rules
+
                     break
             else:
                 break

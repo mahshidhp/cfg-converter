@@ -1,6 +1,8 @@
 from converter.Rule import Rule
 from converter.util import *
 
+EPSILON = 'ε'
+
 
 class State:
     def __init__(self, rule, dot_index, start_column):
@@ -74,7 +76,7 @@ class Parser:
         start_sym = self.grammar.start_symbol
         self.table[0].add(State(rule=Rule("%", start_sym), dot_index=0, start_column=self.table[0]))
 
-        for i in range(0, len(self.table)):
+        for i in range(len(self.table)):
             col = self.table[i]
             for state in col:
                 if state.completed():
@@ -85,14 +87,14 @@ class Parser:
                         self.predict(col, state)
                     elif is_terminal(term) and i+1 < len(self.table):
                         next_col = self.table[i+1]
-                        self.scan(next_col, state, term)
+                        self.scan(next_col, state)
 
             # self.handle_epsilon(col)
             self.table[i].print()
 
         for state in self.table[-1]:
             if state.rule.lhs == "%" and state.completed() and state.start_column is self.table[0]:
-                root = state
+                # root = state
                 return True
         else:
             return False
@@ -106,8 +108,9 @@ class Parser:
             new_state = State(rule, 0, col)
             col.add(new_state)
 
-    def scan(self, next_col, state, term):
-        if term == next_col.token:
+    def scan(self, next_col, state):
+        term = state.next_term()
+        if term == next_col.token or term == EPSILON:
             new_state = State(rule=state.rule, dot_index=state.dot_index+1, start_column=state.start_column)
             next_col.add(new_state)
 
@@ -117,14 +120,9 @@ class Parser:
         for state2 in state.start_column:
             t = state2.next_term()
             if t and is_non_terminal(t) and t == state.rule.lhs:
-                st3 = State(rule=state2.rule, dot_index=state2.dot_index+1, start_column=state2.start_column)
-                col.add(st3)
+                state3 = State(rule=state2.rule, dot_index=state2.dot_index+1, start_column=state2.start_column)
+                col.add(state3)
 
-    def handle_epsilon(self, col):
-        changed = True
-        while changed:
-            changed = False
-            for state in col:
-                if self.complete(col, state):
-                    changed = True
-                self.predict(col, state)
+    def handle_epsilon(self, col, state):
+        pass
+
