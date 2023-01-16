@@ -16,8 +16,8 @@ class Test extends Component {
       <div className="header">
         <h1 className="highlighted">Test</h1>
         <p className="highlighted">
-          Enter a string to check it is derived by the original and result
-          grammar
+          Enter a string to check if it is derived from the original and result
+          grammars
         </p>
         <hr className="highlighted" />
       </div>

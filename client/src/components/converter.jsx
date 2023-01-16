@@ -182,12 +182,28 @@ class Converter extends Component {
   };
 
   convert = () => {
+    this.setState(
+      {
+        resultProductionRules: [],
+        testString: "",
+        isDerivedFromOriginalGrammar: null,
+        isDerivedFromResultGrammar: null,
+        simplificationTimeline: [],
+        simplificationMessages: [],
+        errorMessage: "",
+        originalGrammarExamples: [],
+        resultGrammarExamples: [],
+      },
+      () => this.convert_()
+    );
+  };
+
+  convert_ = () => {
     const requestData = {
       grammar: this.state.productionRules,
       conversionForm: this.state.conversionForm,
     };
     this.postData("/convert", requestData).then((data) => {
-      console.log("convert", data);
       this.setState(
         {
           resultProductionRules: data.convertedGrammar,

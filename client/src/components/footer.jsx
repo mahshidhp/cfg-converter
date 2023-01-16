@@ -30,6 +30,7 @@ class Footer extends Component {
               , Neso Academy
             </li>
             <li>
+              Parser is implemented using{" "}
               <a
                 className="resource"
                 href="https://en.wikipedia.org/wiki/Earley_parser"

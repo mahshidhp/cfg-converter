@@ -21,7 +21,9 @@ class Result extends Component {
   renderHeader() {
     return (
       <div className="col header">
-        <h1 className="highlighted">Result</h1>
+        <h1 className="highlighted" id="result">
+          Result
+        </h1>
         <hr className="highlighted" />
       </div>
     );
@@ -47,11 +49,12 @@ class Result extends Component {
   renderExamples() {
     return (
       <div className="row header">
-        <hr />
         <div className="col-sm-6">
+          <hr />
           {this.printExample(this.props.originalGrammarExamples)}
         </div>
         <div className="col-sm-6">
+          <hr />
           {this.printExample(this.props.resultGrammarExamples)}
         </div>
       </div>
@@ -68,7 +71,7 @@ class Result extends Component {
           {this.props.simplificationTimeline.map((grammar, id) => (
             <div className="col" key={id}>
               <p>
-                <span className="highlighted">Step {id + 1}: </span>
+                <span className="highlighted fw-bold">Step {id + 1}: </span>
                 {this.props.simplificationMessages[id]}
               </p>
               {this.printGrammar(grammar)}
@@ -92,7 +95,7 @@ class Result extends Component {
   printExample(examples) {
     return (
       <Fragment>
-        <p className="highlighted">Example words:</p>
+        <p className="highlighted fw-bold">Example words:</p>
         <p>{examples.join(", ")}</p>
       </Fragment>
     );

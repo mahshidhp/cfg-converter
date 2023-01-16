@@ -48,23 +48,23 @@ class InputGrammar extends Component {
   }
 
   renderDescription() {
-    const terminals = ["ε", "!", "*", "+", "-", "/", ",", ";", ":", '"', "'"];
+    const terminals = " ! * + - / , ; : \" ' ( ) { } < > [ ] \\ # ";
     return (
       <div className="text-start header">
         <h1 className="highlighted">CFG</h1>
         <p className="highlighted">
-          Enter your context free grammar (CFG) and select normal form to
+          Enter your context-free grammar (CFG) and select normal form to
           convert.
         </p>
         <p>
           - Use "S" as start symbol.
           <br />
-          - Use upper-case letters as nont-terminals.
+          - Use upper-case letters as non-terminals.
           <br />- Use lower-case letters, numbers and
-          {" " + terminals.join(" ") + " "}
+          <span className="highlighted">{terminals}</span>
           as terminals.
         </p>
-        <p>You can use example grammars:</p>
+        <p>You can use these example grammars:</p>
         {this.renderExampleGrammarButtons()}
         <hr className="highlighted" />
       </div>
@@ -76,6 +76,7 @@ class InputGrammar extends Component {
       <Fragment>
         {exampleGrammars.map((example, i) => (
           <button
+            key={i}
             className="btn-sm example-btn"
             onClick={() => this.props.handleExampleInputLoad(i)}
           >
