@@ -90,7 +90,7 @@ class Parser:
                         self.scan(next_col, state)
 
             # self.handle_epsilon(col)
-            self.table[i].print()
+            # self.table[i].print()
 
         for state in self.table[-1]:
             if state.rule.lhs == "%" and state.completed() and state.start_column is self.table[0]:
