@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import InputGrammar from "./inputGrammar";
 import Test from "./test";
 import Result from "./result";
+import TestCase from "./testCase";
 import exampleGrammars from "../sampleGrammars.json";
 
 const EPSILON = String.fromCharCode(949);
@@ -26,6 +27,12 @@ class Converter extends Component {
       //examples
       originalGrammarExamples: [],
       resultGrammarExamples: [],
+
+      //test-cases
+      acceptedByOriginalGrammar: [],
+      rejectedByOriginalGrammar: [],
+      acceptedByConvertedGrammar: [],
+      rejectedByConvertedGrammar: [],
     };
   }
 
@@ -63,6 +70,13 @@ class Converter extends Component {
           originalGrammarExamples={this.state.originalGrammarExamples}
           resultGrammarExamples={this.state.resultGrammarExamples}
         />
+        <TestCase
+          generateTestCases={this.generateTestCases}
+          acceptedByOriginalGrammar={this.state.acceptedByOriginalGrammar}
+          rejectedByOriginalGrammar={this.state.rejectedByOriginalGrammar}
+          acceptedByConvertedGrammar={this.state.acceptedByConvertedGrammar}
+          rejectedByConvertedGrammar={this.state.rejectedByConvertedGrammar}
+        />
       </div>
     );
   }
@@ -79,6 +93,10 @@ class Converter extends Component {
       errorMessage: "",
       originalGrammarExamples: [],
       resultGrammarExamples: [],
+      acceptedByOriginalGrammar: [],
+      rejectedByOriginalGrammar: [],
+      acceptedByConvertedGrammar: [],
+      rejectedByConvertedGrammar: [],
     });
   };
 
@@ -193,6 +211,10 @@ class Converter extends Component {
         errorMessage: "",
         originalGrammarExamples: [],
         resultGrammarExamples: [],
+        acceptedByOriginalGrammar: [],
+        rejectedByOriginalGrammar: [],
+        acceptedByConvertedGrammar: [],
+        rejectedByConvertedGrammar: [],
       },
       () => this.convert_()
     );
@@ -242,6 +264,23 @@ class Converter extends Component {
       this.setState({
         originalGrammarExamples: data.originalGrammarExamples,
         resultGrammarExamples: data.resultGrammarExamples,
+      });
+    });
+  };
+
+  generateTestCases = () => {
+    const requestData = {
+      grammar: this.state.productionRules,
+      resultGrammar: this.state.resultProductionRules,
+      count: 10,
+    };
+
+    this.postData("/testcase", requestData).then((data) => {
+      this.setState({
+        acceptedByOriginalGrammar: data.acceptedByOriginalGrammar,
+        rejectedByOriginalGrammar: data.rejectedByOriginalGrammar,
+        acceptedByConvertedGrammar: data.acceptedByConvertedGrammar,
+        rejectedByConvertedGrammar: data.rejectedByConvertedGrammar,
       });
     });
   };

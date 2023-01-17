@@ -6,6 +6,7 @@ from converter.Greibach import Greibach
 from converter.Parser import Parser
 from converter.Grammar import Grammar
 from converter.Exceptions import *
+from converter.TestcaseGenerator import TestcaseGenerator
 
 app = Flask(__name__, static_folder="client/build", static_url_path="")
 CORS(app)
@@ -78,6 +79,25 @@ def generate_example_word():
     return {
         "originalGrammarExamples": original_grammar_examples,
         "resultGrammarExamples": result_grammar_examples
+    }
+
+
+@app.route("/testcase", methods=["POST"])
+@cross_origin()
+def generate_testcase():
+    request_body = request.get_json()
+    count = request_body['count'] or 5
+    original_grammar = Grammar(request_body['grammar'])
+    result_grammar = Grammar(request_body['resultGrammar'])
+
+    result = TestcaseGenerator(original_grammar, result_grammar).generate(count)
+    acc_by_grammar1, rej_by_grammar1, acc_by_grammar2, rej_by_grammar2 = result
+
+    return {
+        "acceptedByOriginalGrammar": acc_by_grammar1,
+        "rejectedByOriginalGrammar": rej_by_grammar1,
+        "acceptedByConvertedGrammar": acc_by_grammar2,
+        "rejectedByConvertedGrammar": rej_by_grammar2
     }
 
 

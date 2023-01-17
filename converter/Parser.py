@@ -110,7 +110,7 @@ class Parser:
 
     def scan(self, next_col, state):
         term = state.next_term()
-        if term == next_col.token or term == EPSILON:
+        if term == next_col.token:
             new_state = State(rule=state.rule, dot_index=state.dot_index+1, start_column=state.start_column)
             next_col.add(new_state)
 

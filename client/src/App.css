@@ -7,6 +7,7 @@
   --fail: rgb(220, 53, 69, 0.5);
   --fail-fill: rgb(220, 53, 69);
   --success: rgb(40, 167, 69, 0.5);
+  --success-fill: rgb(40, 167, 69);
   --shadow: 0.1;
 }
 
@@ -20,6 +21,7 @@
   --fail: rgb(220, 53, 69, 0.5);
   --fail-fill: rgb(220, 53, 69);
   --success: rgb(40, 167, 69, 0.5);
+  --success-fill: rgb(40, 167, 69);
   --shadow: 0.01;
 } */
 
@@ -174,6 +176,14 @@ input {
   border-radius: 6px;
   padding: 20px 40px;
   margin: 20px;
+}
+
+.success-text {
+  color: var(--success-fill);
+}
+
+.fail-text {
+  color: var(--fail-fill);
 }
 
 /* ----------------------------------------------------------- */
