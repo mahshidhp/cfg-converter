@@ -35,7 +35,7 @@ this will open up a browser tab on http://localhost:3000 running the project
 
 ## Screenshots
 
-![Chomsky normal form](images/screencapture-mahshidhp-pythonanywhere-2023-01-16-17_52_15.png)
+![Chomsky normal form](images/chomsky.png)
 
 
-![Greibach normal form](images/screencapture-mahshidhp-pythonanywhere-2023-01-16-17_53_09.png)
+![Greibach normal form](images/greibach.png)
