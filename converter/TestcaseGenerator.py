@@ -9,7 +9,7 @@ class TestcaseGenerator:
         self.grammar2 = grammar2
 
     def generate(self, count):
-        acc_by_grammar1 = self.grammar2.generate_example_words(count)
+        acc_by_grammar1 = self.grammar1.generate_example_words(count)
         rej_by_grammar2 = self.generate_unacceptable_words_from_grammar2(count)
         acc_by_grammar2 = self.filter_acceptable_words_for_grammar2(acc_by_grammar1)
         rej_by_grammar1 = self.filter_unacceptable_words_for_grammar1(rej_by_grammar2)
@@ -25,7 +25,7 @@ class TestcaseGenerator:
             random_word_length = random.randint(2, 10)
             random_word = "".join([random.choice(terminals) for _ in range(random_word_length)])
             is_acceptable = Parser(self.grammar2, random_word).parse()
-            if not is_acceptable:
+            if not is_acceptable and random_word not in unacceptable_words:
                 unacceptable_words.append(random_word)
 
         return unacceptable_words

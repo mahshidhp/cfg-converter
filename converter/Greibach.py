@@ -26,7 +26,7 @@ class Greibach(Converter):
         self.sort_rules()
         self.remove_left_recursion()
         self.make_rhs_first_symbol_terminal()
-        self.sort()
+        self.grammar.sort()
         return self.grammar
 
     def map_non_terminal_to_ordered_symbols(self):

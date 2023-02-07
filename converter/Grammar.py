@@ -140,3 +140,8 @@ class Grammar:
         current_word = current_word.replace('ε', '')
         return current_word
 
+    def sort(self):
+        dollar_production = self["$"]
+        s_productions = self["S"]
+        other_productions = [rule for rule in self.rules if rule not in dollar_production + s_productions]
+        self.rules = dollar_production + s_productions + other_productions

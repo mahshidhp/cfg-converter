@@ -44,5 +44,5 @@ class Chomsky(Converter):
             else:
                 break
 
-        self.sort()
+        self.grammar.sort()
         return self.grammar

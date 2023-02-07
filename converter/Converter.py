@@ -14,10 +14,3 @@ class Converter(ABC):
     @abstractmethod
     def convert(self):
         pass
-
-    def sort(self):
-        dollar_production = self.grammar["$"]
-        s_productions = self.grammar["S"]
-        other_productions = [rule for rule in self.grammar.rules if rule not in dollar_production + s_productions]
-        self.grammar.rules = dollar_production + s_productions + other_productions
-
