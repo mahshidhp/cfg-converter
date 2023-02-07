@@ -64,11 +64,6 @@ html {
   box-shadow: 5px 5px rgba(49, 49, 49, 0.349);
 }
 
-.card-shadow:hover {
-  padding: 60px 50px;
-  box-shadow: 10px 10px rgba(49, 49, 49, 0.349);
-}
-
 /* ----------------------------inputs---------------------------- */
 
 input {
@@ -99,12 +94,6 @@ input {
   border-radius: 10px;
 }
 
-.transparent-button:hover {
-  background-color: var(--border-color);
-  color: var(--bg-color);
-  font-size: larger;
-}
-
 .main-button {
   background-color: var(--border-color);
   color: var(--text-color);
@@ -112,10 +101,6 @@ input {
   font-size: larger;
   padding: 8px;
   border-radius: 10px;
-}
-
-.main-button:hover {
-  font-size: x-large;
 }
 
 .add-btn {
@@ -129,10 +114,6 @@ input {
   border-radius: 10px;
 }
 
-.add-btn:hover {
-  filter: brightness(120%);
-}
-
 .example-btn {
   background-color: var(--border-color);
   border: 2px solid var(--border-color);
@@ -141,18 +122,9 @@ input {
   margin-right: 10px;
 }
 
-.example-btn:hover {
-  filter: brightness(120%);
-}
-
 .delete {
   fill: var(--fail-fill);
   height: 2em;
-}
-
-.delete:hover {
-  cursor: pointer;
-  filter: brightness(120%);
 }
 
 /* ----------------------------test---------------------------- */
@@ -211,13 +183,43 @@ a {
   color: var(--text-color);
 }
 
-a:hover {
-  color: var(--highlight-color) !important;
-}
-
 svg {
   margin-right: 8px;
   margin-bottom: 2px;
   height: 1.5em;
   width: 1.5em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-shadow:hover {
+    padding: 60px 50px;
+    box-shadow: 10px 10px rgba(49, 49, 49, 0.349);
+  }
+
+  .transparent-button:hover {
+    background-color: var(--border-color);
+    color: var(--bg-color);
+    font-size: larger;
+  }
+
+  .main-button:hover {
+    font-size: x-large;
+  }
+
+  .add-btn:hover {
+    filter: brightness(120%);
+  }
+
+  .example-btn:hover {
+    filter: brightness(120%);
+  }
+
+  .delete:hover {
+    cursor: pointer;
+    filter: brightness(120%);
+  }
+
+  a:hover {
+    color: var(--highlight-color) !important;
+  }
 }
